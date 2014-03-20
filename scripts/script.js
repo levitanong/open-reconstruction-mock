@@ -20,6 +20,21 @@ var rand = {
     }
     return Math.round(Math.random() * (upper - lower)) + lower;
   },
+  date: function(backThen){
+    if(typeof(backThen) == "undefined"){
+      var backThen = new Date('January 1, 2013');
+    }
+    var now = new Date(Date.now());
+    return new Date(now - Math.round((now - backThen) * Math.random()));
+  },
+  amount: function(){
+    return Math.round(Math.random() * 100) * 100000;
+  },
+  fromArray: function(arr){
+    var n = Math.random() * (arr.length - 1);
+    var index = Math.round(n);
+    return arr[index];
+  }
 }
 
 ////////////////////////////////////////////////////
@@ -60,7 +75,43 @@ recon.Users = function(){
 };
 
 recon.Project = function(data){
+  for(prop in data){
+    this[prop] = m.prop(data[prop]);
+  }
+}
 
+recon.Projects = function(){
+  this.genProject = function(){
+   return new recon.Project({
+    date: rand.date(),
+    level: 1,
+    isRejected: false,
+    // disaster: {
+    //   type: self.genFromArray(types.disaster),
+    //   name: self.genFromArray(types['disaster names']),
+    //   date: new Date(Date.now()),
+    //   cause: null
+    // },
+    // author: users.list.filter(function(user){return user.level == 0})[0],
+    // implementingAgency: null,
+    // project: {
+    //   type: self.genFromArray(types.project),
+    //   description: self.genFromArray(types.description),
+    //   amount: self.genAmount()
+    // },
+    // location: users.current.address,
+    // remarks: null,
+    // history: [],
+    // attachments: genArray(self.genInt(1, 6))
+   })
+  }
+  this.genProjects = function(qty){
+    var list = [];
+    for(var i = 0; i < qty; i++){
+      list.push(this.genProject());
+    }
+    return list;
+  }
 }
 
 ////////////////////////////////////////////////////
@@ -68,7 +119,13 @@ recon.Project = function(data){
 
 recon.controller = function(){
   var Users = new recon.Users();
+  var Projects = new recon.Projects();
+  var self = this;
   this.list = Users.genUsers();
+  this.projectList = this.list.then(function(){
+    return Projects.genProjects(50);
+  });
+  // this.projectList.then(function(){console.log(self.projectList())})
 }
 
 ////////////////////////////////////////////////////
@@ -80,9 +137,13 @@ recon.view = function(ctrl){
       m("div", [
         m("ul"),[
           ctrl.list().map(function(user){
+            console.log(ctrl.projectList());
             return m("li", [
               user.getName(),
-              user.level()
+              user.level(),
+              ctrl.projectList().map(function(p){
+                return m("span", [p.date()]);
+              })
             ])
           })
         ]])
