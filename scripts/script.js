@@ -71,7 +71,8 @@ recon.Users = function(){
         return new recon.User(r.user);
       });
     });
-  }
+  };
+  this.current = {}
 };
 
 recon.Project = function(data){
