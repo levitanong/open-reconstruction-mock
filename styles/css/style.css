@@ -6346,3 +6346,15 @@ th.hide-for-touch {
 
 .touch th.show-for-touch {
   display: table-cell !important; }
+
+.portrait {
+  border-radius: 50%; }
+  .portrait.sml {
+    height: 32px;
+    width: 32px; }
+  .portrait.med {
+    height: 64px;
+    width: 64px; }
+  .portrait.lrg {
+    height: 128px;
+    width: 128px; }

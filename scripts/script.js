@@ -138,14 +138,25 @@ recon.controller = function(){
   this.logOut = function(){
     this.currentUser = new recon.User();
   }
-  // this.projectList.then(function(){console.log(self.projectList())})
 }
 
 ////////////////////////////////////////////////////
 // View
 
 recon.view = function(ctrl){
+  // nav bar
   var nav = function(){
+
+    var menuItems = [
+      {label: "Overview", url: "#"},
+      {label: "Projects", url: "#"}
+    ]
+
+    var menuItem = function(data){
+      if(!data.url) data.url = "#";
+      return m("li", [m("a", {href: data.url}, data.label)]);
+    }
+
     return m("nav.top-bar[data-topbar]", [
       m("ul.title-area", [
         m("li.name", [
@@ -156,19 +167,21 @@ recon.view = function(ctrl){
       ]),
       m("section.top-bar-section", [
         m("ul.left", [
-          m("li", [
-            m("a[href='#']", "Overview")
-          ]),
-          m("li", [
-            m("a[href='#']", "Projects")
-          ])
+          menuItems.map(menuItem)
         ]),
         m("ul.right", [
-          m("li", [
-            m("a[href='#']", "Generate Sample Data")
-          ]),
+          menuItem({label: "Generate Sample Data"}),
           m("li.has-dropdown.not-click", [
-            m("a[href='#']", ctrl.currentUser.getName()),
+            m("a[href='#']", [
+              (function(){
+                if(ctrl.currentUser.picture){
+                  return m("img.portrait.sml", {src: ctrl.currentUser.picture()});
+                } else {
+                  return "";
+                }
+              })(),
+              ctrl.currentUser.getName()
+            ]),
             m("ul.dropdown", [
               ctrl.userList().map(function(user){
                 return m("li", [
@@ -184,6 +197,8 @@ recon.view = function(ctrl){
       ])
     ]);
   }
+
+  // main
   return m("html", [
     m("head", [
       m("link[href='styles/css/style.css'][rel='stylesheet']")
