@@ -55,7 +55,11 @@ recon.User = function(data){
     sitio: null
   });
   this.getName = function(){
-    return this.name().first + " " + this.name().last
+    if(typeof(data) == "undefined"){
+      return "Guest";
+    } else {
+      return this.name().first + " " + this.name().last;
+    }
   }
 }
 
@@ -72,7 +76,7 @@ recon.Users = function(){
       });
     });
   };
-  this.current = {}
+  this.current = new recon.User();
 };
 
 recon.Project = function(data){
@@ -122,10 +126,18 @@ recon.controller = function(){
   var Users = new recon.Users();
   var Projects = new recon.Projects();
   var self = this;
+  this.currentUser = Users.current;
   this.userList = Users.genUsers();
   this.projectList = this.userList.then(function(){
     return Projects.genProjects(50);
   });
+
+  this.logIn = function(user){
+    this.currentUser = user;
+  }
+  this.logOut = function(){
+    this.currentUser = new recon.User();
+  }
   // this.projectList.then(function(){console.log(self.projectList())})
 }
 
@@ -156,11 +168,11 @@ recon.view = function(ctrl){
             m("a[href='#']", "Generate Sample Data")
           ]),
           m("li.has-dropdown.not-click", [
-            m("a[href='#']", "Current User"),
+            m("a[href='#']", ctrl.currentUser.getName()),
             m("ul.dropdown", [
               ctrl.userList().map(function(user){
                 return m("li", [
-                  m("a[href='#'\]", user.getName())
+                  m("a",{onclick: ctrl.logIn.bind(ctrl, user)}, "Login as " + user.getName())
                 ])
               })
             ])
