@@ -121,8 +121,8 @@ recon.controller = function(){
   var Users = new recon.Users();
   var Projects = new recon.Projects();
   var self = this;
-  this.list = Users.genUsers();
-  this.projectList = this.list.then(function(){
+  this.userList = Users.genUsers();
+  this.projectList = this.userList.then(function(){
     return Projects.genProjects(50);
   });
   // this.projectList.then(function(){console.log(self.projectList())})
@@ -132,20 +132,58 @@ recon.controller = function(){
 // View
 
 recon.view = function(ctrl){
+  var nav = function(){
+    return m("nav.top-bar[data-topbar]", [
+      m("ul.title-area", [
+        m("li.name", [
+          m("h1", [
+            m("a[href='#']", "Open Reconstruction")
+          ])
+        ])
+      ]),
+      m("section.top-bar-section", [
+        m("ul.left", [
+          m("li", [
+            m("a[href='#']", "Overview")
+          ]),
+          m("li", [
+            m("a[href='#']", "Projects")
+          ])
+        ]),
+        m("ul.right", [
+          m("li", [
+            m("a[href='#']", "Generate Sample Data")
+          ]),
+          m("li.has-dropdown.not-click", [
+            m("a[href='#']", "Current User"),
+            m("ul.dropdown", [
+              ctrl.userList().map(function(user){
+                return m("li", [
+                  m("a[href='#'\]", user.getName())
+                ])
+              })
+            ])
+          ])
+        ])
+      ])
+    ]);
+  }
   return m("html", [
+    m("head", [
+      m("link[href='styles/css/style.css'][rel='stylesheet']")
+    ]),
     m("body", [
+      nav(),
       m("div", [
         m("ul"),[
-          ctrl.list().map(function(user){
-            console.log(ctrl.projectList());
+          ctrl.userList().map(function(user){
+            // console.log(ctrl.projectList())
             return m("li", [
               user.getName(),
               user.level(),
-              ctrl.projectList().map(function(p){
-                return m("span", [p.date()]);
-              })
+              m("button", "hi")
             ])
-          })
+          }),
         ]])
       ])
     ])
