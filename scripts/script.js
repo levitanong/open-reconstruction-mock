@@ -174,7 +174,10 @@ recon.view = function(ctrl){
                 return m("li", [
                   m("a",{onclick: ctrl.logIn.bind(ctrl, user)}, "Login as " + user.getName())
                 ])
-              })
+              }),
+              m("li", [
+                m("a", {onclick:ctrl.logOut.bind(ctrl)}, "Logout")
+              ])
             ])
           ])
         ])
