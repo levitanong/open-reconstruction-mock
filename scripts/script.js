@@ -1,15 +1,82 @@
-
-
-var recon = {};
-var rand = {};
-
 // below to be deprecated when mithril comes out with new release. Also remove config:publicAPI from genUsers request.
 var publicAPI = function(xhr){
   xhr.withCredentials = false;
 }
 
+var recon = {};
+var rand = {};
+var user = {
+  // model
+  User: function(data){
+    for(prop in data){
+      this[prop] = m.prop(data[prop]);
+    }
+    this.address = m.prop({
+      district: null,
+      department: null,
+      region: 8,
+      province: 'Western Samar',
+      city: null,
+      town: 'Daram',
+      barangay: null,
+      sitio: null
+    });
+  },
+
+  // controller
+  controller: function(){
+    this.currentUser = new user.User();
+    this.getName = function(user){
+      if(typeof(user.name) == "undefined"){
+        return "Guest";
+      } else {
+        return user.name().first + " " + user.name().last;
+      }
+    };
+    this.genUsers = function(){
+      return m.request({
+        method: "GET", 
+        url: "http://api.randomuser.me/?results=5",
+        config: publicAPI
+      }).then(function(data){
+        return data.results.map(function(r, index){
+          r.user.level = index;
+          return new user.User(r.user);
+        });
+      });
+    };
+    this.logIn = function(user){
+      this.currentUser = user;
+    };
+    this.logOut = function(){
+      this.currentUser = new user.User();
+    };
+  }
+};
+
 ////////////////////////////////////////////////////
 // Helpers
+
+var sample = {
+  'disaster names': ['Brunhilda', 'Bantay', 'Muning', 'Dodong', 'Puring'],
+  'disaster': ['Earthquake', 'Flood', 'Typhoon', 'Landslide', 'Anthropogenic'],
+  'projectType': ['Infrastructure', 'Agriculture', 'School Building', 'Health Facilities', 'Shelter Units', 'Environment', 'Other'],
+  'description': [
+    'Adamantium reinforcement for nipa huts.',
+    'These equipments, you know. I need them.',
+    'Very very urgent, we ran out of soft drinks! Help!',
+    'We want to hire Michael Jackson to dance for residents of disaster-afflicted areas',
+    'Request for funding to dispatch search and rescue team for missing local domesticated feline',
+    'Our bridge is missing, can you help us buy another one?'
+  ],
+  'comment': [
+    'Please attach two photocopies of Form R311-78a.9v8 (1983)',
+    'This is a wonderful idea, we should double their budget and give them cake.',
+    'Can I promise to do this if they vote for me?'
+  ],
+  'revision': [null, 0.85, 0.70, 0.65, 0.50, 0.35, 0.2],
+  'region': ["Region 1", "Region 2", "Region 3", "Region 4", "Region 5", "Region 6", "Region 7", "Region 8", "Region 9", "Region 10", "Region 11", "Region 12", "Region 13", 'ARMM', 'NCR', 'CAR']
+};
 
 var rand = {
   int: function(lower, upper){
@@ -37,47 +104,17 @@ var rand = {
   }
 }
 
-////////////////////////////////////////////////////
-// Model
-
-recon.User = function(data){
+recon.Calamity = function(data){
   for(prop in data){
     this[prop] = m.prop(data[prop]);
   }
-  this.address = m.prop({
-    district: null,
-    department: null,
-    region: 8,
-    province: 'Western Samar',
-    city: null,
-    town: 'Daram',
-    barangay: null,
-    sitio: null
-  });
-  this.getName = function(){
-    if(typeof(data) == "undefined"){
-      return "Guest";
-    } else {
-      return this.name().first + " " + this.name().last;
-    }
-  }
 }
 
-recon.Users = function(){
-  this.genUsers = function(){
-    return m.request({
-      method: "GET", 
-      url: "http://api.randomuser.me/?results=5",
-      config: publicAPI
-    }).then(function(data){
-      return data.results.map(function(r, index){
-        r.user.level = index;
-        return new recon.User(r.user);
-      });
-    });
-  };
-  this.current = new recon.User();
-};
+recon.Action = function(data){
+  for(prop in data){
+    this[prop] = m.prop(data[prop]);
+  }
+}
 
 recon.Project = function(data){
   for(prop in data){
@@ -87,28 +124,26 @@ recon.Project = function(data){
 
 recon.Projects = function(){
   this.genProject = function(){
-   return new recon.Project({
-    date: rand.date(),
-    level: 1,
-    isRejected: false,
-    // disaster: {
-    //   type: self.genFromArray(types.disaster),
-    //   name: self.genFromArray(types['disaster names']),
-    //   date: new Date(Date.now()),
-    //   cause: null
-    // },
-    // author: users.list.filter(function(user){return user.level == 0})[0],
-    // implementingAgency: null,
-    // project: {
-    //   type: self.genFromArray(types.project),
-    //   description: self.genFromArray(types.description),
-    //   amount: self.genAmount()
-    // },
-    // location: users.current.address,
-    // remarks: null,
-    // history: [],
-    // attachments: genArray(self.genInt(1, 6))
-   })
+    return new recon.Project({
+      date: rand.date(),
+      level: 1,
+      isRejected: false,
+      amount: 0,
+      description: rand.fromArray(sample.description),
+      type: rand.fromArray(sample.projectType),
+      // disaster: {
+      //   type: self.genFromArray(types.disaster),
+      //   name: self.genFromArray(types['disaster names']),
+      //   date: new Date(Date.now()),
+      //   cause: null
+      // },
+      // author: users.list.filter(function(user){return user.level == 0})[0],
+      // implementingAgency: null,
+      // location: users.current.address,
+      // remarks: null,
+      // history: [],
+      // attachments: genArray(self.genInt(1, 6))
+    })
   }
   this.genProjects = function(qty){
     var list = [];
@@ -123,20 +158,18 @@ recon.Projects = function(){
 // Controller
 
 recon.controller = function(){
-  var Users = new recon.Users();
+  this.Users = new user.controller();
+  this.userList = this.Users.genUsers();
   var Projects = new recon.Projects();
-  var self = this;
-  this.currentUser = Users.current;
-  this.userList = Users.genUsers();
   this.projectList = this.userList.then(function(){
     return Projects.genProjects(50);
   });
 
   this.logIn = function(user){
-    this.currentUser = user;
+    this.Users.currentUser = user;
   }
   this.logOut = function(){
-    this.currentUser = new recon.User();
+    this.Users.currentUser = new recon.User();
   }
 }
 
@@ -174,18 +207,19 @@ recon.view = function(ctrl){
           m("li.has-dropdown.not-click", [
             m("a[href='#']", [
               (function(){
-                if(ctrl.currentUser.picture){
-                  return m("img.portrait.sml", {src: ctrl.currentUser.picture()});
+                console.log(ctrl.Users.currentUser);
+                if(ctrl.Users.currentUser.picture){
+                  return m("img.portrait.sml", {src: ctrl.Users.currentUser.picture()});
                 } else {
                   return "";
                 }
               })(),
-              ctrl.currentUser.getName()
+              ctrl.Users.getName(ctrl.Users.currentUser)
             ]),
             m("ul.dropdown", [
               ctrl.userList().map(function(user){
                 return m("li", [
-                  m("a",{onclick: ctrl.logIn.bind(ctrl, user)}, "Login as " + user.getName())
+                  m("a",{onclick: ctrl.logIn.bind(ctrl, user)}, "Login as " + ctrl.Users.getName(user))
                 ])
               }),
               m("li", [
@@ -207,11 +241,10 @@ recon.view = function(ctrl){
       nav(),
       m("div", [
         m("ul"),[
-          ctrl.userList().map(function(user){
+          ctrl.projectList().map(function(project){
             // console.log(ctrl.projectList())
             return m("li", [
-              user.getName(),
-              user.level(),
+              project.description(),
               m("button", "hi")
             ])
           }),
