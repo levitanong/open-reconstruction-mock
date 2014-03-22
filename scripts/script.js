@@ -2,6 +2,20 @@
 var publicAPI = function(xhr){
   xhr.withCredentials = false;
 }
+var genArray = function($from, $to){
+  var list = [];
+  if($from < $to){
+    for(var i = $from; i < $to; i++){
+      list.push(i);
+    }
+  } else {
+    // $from >= $to
+    for (var i = $from; i > $to; i--){
+      list.push(i);
+    }
+  }
+  return list;
+}
 
 var recon = {};
 var rand = {};
@@ -55,20 +69,16 @@ var user = {
 };
 
 var project = {
-  Project: function(data){
+  Project: function(data, user){
     for(prop in data){
       this[prop] = m.prop(data[prop]);
     }
+    this.author = user;
   },
   controller: function(){
-
-    this.create = function(project, user){
-      project.author = user;
-      
-      //also add history
-    }
+    this.list = [];
     this.genProjects = function(qty, users){
-      var list = [];
+      var tempList = [];
       var creator = _.chain(users)
       .filter(function(u){
         // or basically anyone who can request for projects
@@ -77,38 +87,26 @@ var project = {
       .sample(1)
       .value()
 
-      for(var i = 0; i < qty; i++){
-        list.push(this.create(
-          {
-            date: rand.date(),
-            level: 1,
-            isRejected: false,
-            amount: 0,
-            description: rand.fromArray(sample.description),
-            type: rand.fromArray(sample.projectType),
-            author: _.sample(creators, 1),
-            disaster: {
-              type: rand.fromArray(sample.disaster),
-              name: rand.fromArray(sample['disaster names'])
-            },
-            implementingAgency: null,
-            location: creator.address,
-            remarks: '',
-            history: [],
-            attachments: genArray(rand.int(1, 6))
-          }, creator
-
-        ));
-      }
-      return list;
-    }
-    this.genProjects = function(qty){
-      var list = [];
-      for(var i = 0; i < qty; i++){
-        list.push(this.genProject());
-      }
-      return list;
-    }
+      this.list = genArray(0, qty).map(function(i){
+        return new project.Project({
+          date: rand.date(),
+          level: 1,
+          isRejected: false,
+          amount: 0,
+          description: rand.fromArray(sample.description),
+          type: rand.fromArray(sample.projectType),
+          disaster: {
+            type: rand.fromArray(sample.disaster),
+            name: rand.fromArray(sample['disaster names'])
+          },
+          implementingAgency: null,
+          location: creator.address,
+          remarks: '',
+          history: [],
+          attachments: genArray(rand.int(1, 6))
+        }, creator);
+      });
+    };
   }
 }
 
@@ -168,67 +166,62 @@ recon.Calamity = function(data){
   }
 }
 
-recon.Action = function(data){
-  for(prop in data){
-    this[prop] = m.prop(data[prop]);
-  }
-}
+// recon.Action = function(data){
+//   for(prop in data){
+//     this[prop] = m.prop(data[prop]);
+//   }
+// }
 
-recon.Project = function(data){
-  for(prop in data){
-    this[prop] = m.prop(data[prop]);
-  }
-}
+// recon.Project = function(data){
+//   for(prop in data){
+//     this[prop] = m.prop(data[prop]);
+//   }
+// }
 
-recon.Projects = function(){
-  this.genProject = function(){
-    return new recon.Project({
-      date: rand.date(),
-      level: 1,
-      isRejected: false,
-      amount: 0,
-      description: rand.fromArray(sample.description),
-      type: rand.fromArray(sample.projectType),
-      // disaster: {
-      //   type: self.genFromArray(types.disaster),
-      //   name: self.genFromArray(types['disaster names']),
-      //   date: new Date(Date.now()),
-      //   cause: null
-      // },
-      // author: users.list.filter(function(user){return user.level == 0})[0],
-      // implementingAgency: null,
-      // location: users.current.address,
-      // remarks: null,
-      // history: [],
-      // attachments: genArray(self.genInt(1, 6))
-    })
-  }
-  this.genProjects = function(qty){
-    var list = [];
-    for(var i = 0; i < qty; i++){
-      list.push(this.genProject());
-    }
-    return list;
-  }
-}
+// recon.Projects = function(){
+//   this.genProject = function(){
+//     return new recon.Project({
+//       date: rand.date(),
+//       level: 1,
+//       isRejected: false,
+//       amount: 0,
+//       description: rand.fromArray(sample.description),
+//       type: rand.fromArray(sample.projectType),
+//       // disaster: {
+//       //   type: self.genFromArray(types.disaster),
+//       //   name: self.genFromArray(types['disaster names']),
+//       //   date: new Date(Date.now()),
+//       //   cause: null
+//       // },
+//       // author: users.list.filter(function(user){return user.level == 0})[0],
+//       // implementingAgency: null,
+//       // location: users.current.address,
+//       // remarks: null,
+//       // history: [],
+//       // attachments: genArray(self.genInt(1, 6))
+//     })
+//   }
+//   this.genProjects = function(qty){
+//     var list = [];
+//     for(var i = 0; i < qty; i++){
+//       list.push(this.genProject());
+//     }
+//     return list;
+//   }
+// }
 
 ////////////////////////////////////////////////////
 // Controller
 
 recon.controller = function(){
-  this.Users = new user.controller();
-  this.userList = this.Users.genUsers();
-  var Projects = new recon.Projects();
-  this.projectList = this.userList.then(function(){
-    return Projects.genProjects(50);
-  });
+  var self = this;
+  self.Users = new user.controller();
+  self.Projects = new project.controller();
 
-  this.logIn = function(user){
-    this.Users.currentUser = user;
-  }
-  this.logOut = function(){
-    this.Users.currentUser = new recon.User();
-  }
+  self.userList = this.Users.genUsers();
+  self.userList.then(function(){
+    self.Projects.genProjects(50);
+  });
 }
 
 ////////////////////////////////////////////////////
@@ -277,11 +270,11 @@ recon.view = function(ctrl){
             m("ul.dropdown", [
               ctrl.userList().map(function(user){
                 return m("li", [
-                  m("a",{onclick: ctrl.logIn.bind(ctrl, user)}, "Login as " + ctrl.Users.getName(user))
+                  m("a",{onclick: ctrl.Users.logIn.bind(ctrl.Users, user)}, "Login as " + ctrl.Users.getName(user))
                 ])
               }),
               m("li", [
-                m("a", {onclick:ctrl.logOut.bind(ctrl)}, "Logout")
+                m("a", {onclick:ctrl.Users.logOut.bind(ctrl)}, "Logout")
               ])
             ])
           ])
@@ -299,10 +292,10 @@ recon.view = function(ctrl){
       nav(),
       m("div", [
         m("ul"),[
-          ctrl.projectList().map(function(project){
+          ctrl.Projects.list.map(function(project){
             return m("li", [
-              project.description(),
-              m("button", {onclick: function(){ctrl.Users.create()}},"hi")
+              project.description()
+              // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
             ])
           }),
         ]])
