@@ -21,6 +21,34 @@ var genArray = function($from, $to){
   return list;
 }
 
+var rand = {
+  int: function(lower, upper){
+    if(typeof(upper) == 'undefined'){
+      // catches for when only one argument is added, meant for upper.
+      upper = lower;
+      lower = 0
+    }
+    return Math.round(Math.random() * (upper - lower)) + lower;
+  },
+  date: function(backThen){
+    if(typeof(backThen) == "undefined"){
+      var backThen = new Date('January 1, 2013');
+    }
+    var now = new Date(Date.now());
+    return new Date(now - Math.round((now - backThen) * Math.random()));
+  },
+  amount: function(){
+    return Math.round(Math.random() * 100) * 100000;
+  },
+  fromArray: function(arr){
+    return _.sample(arr, 1)[0]
+    // var n = Math.random() * (arr.length - 1);
+    // var index = Math.round(n);
+    // return arr[index];
+  }
+}
+
+
 var sample = {
   'disaster names': ['Brunhilda', 'Bantay', 'Muning', 'Dodong', 'Puring'],
   'disaster': ['Earthquake', 'Flood', 'Typhoon', 'Landslide', 'Anthropogenic'],
@@ -42,37 +70,10 @@ var sample = {
   'region': ["Region 1", "Region 2", "Region 3", "Region 4", "Region 5", "Region 6", "Region 7", "Region 8", "Region 9", "Region 10", "Region 11", "Region 12", "Region 13", 'ARMM', 'NCR', 'CAR']
 };
 
-var rand = {
-  int: function(lower, upper){
-    if(typeof(upper) == 'undefined'){
-      // catches for when only one argument is added, meant for upper.
-      upper = lower;
-      lower = 0
-    }
-    return Math.round(Math.random() * (upper - lower)) + lower;
-  },
-  date: function(backThen){
-    if(typeof(backThen) == "undefined"){
-      var backThen = new Date('January 1, 2013');
-    }
-    var now = new Date(Date.now());
-    return new Date(now - Math.round((now - backThen) * Math.random()));
-  },
-  amount: function(){
-    return Math.round(Math.random() * 100) * 100000;
-  },
-  fromArray: function(arr){
-    var n = Math.random() * (arr.length - 1);
-    var index = Math.round(n);
-    return arr[index];
-  }
-}
-
 ////////////////////////////////////////////////////
 // namespace
 
 var recon = {};
-var rand = {};
 var user = {
   // model
   User: function(data){
@@ -142,7 +143,6 @@ var project = {
       })
       .sample(1)
       .value()
-
       this.list = genArray(0, qty).map(function(i){
         return new project.Project({
           date: rand.date(),
@@ -214,7 +214,6 @@ recon.view = function(ctrl){
           m("li.has-dropdown.not-click", [
             m("a[href='#']", [
               (function(){
-                console.log(ctrl.Users.current);
                 if(ctrl.Users.current.picture){
                   return m("img.portrait.sml", {src: ctrl.Users.current.picture()});
                 } else {
