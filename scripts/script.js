@@ -238,6 +238,19 @@ recon.view = function(ctrl){
     ]);
   }
 
+  // project list
+
+  var projList = function(){
+    return m("ul"),[
+      ctrl.Projects.list.map(function(project){
+        return m("li", [
+          project.description()
+          // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
+        ])
+      }),
+    ]
+  }
+
   // main
   return m("html", [
     m("head", [
@@ -245,17 +258,13 @@ recon.view = function(ctrl){
     ]),
     m("body", [
       nav(),
-      m("div", [
-        m("ul"),[
-          ctrl.Projects.list.map(function(project){
-            return m("li", [
-              project.description()
-              // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
-            ])
-          }),
-        ]])
+      m("section", [
+        m("div.row", [
+          projList()
+        ])
       ])
     ])
+  ])
 }
 
 ////////////////////////////////////////////////////
