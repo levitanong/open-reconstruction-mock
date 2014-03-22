@@ -54,6 +54,64 @@ var user = {
   }
 };
 
+var project = {
+  Project: function(data){
+    for(prop in data){
+      this[prop] = m.prop(data[prop]);
+    }
+  },
+  controller: function(){
+
+    this.create = function(project, user){
+      project.author = user;
+      
+      //also add history
+    }
+    this.genProjects = function(qty, users){
+      var list = [];
+      var creator = _.chain(users)
+      .filter(function(u){
+        // or basically anyone who can request for projects
+        return u.level == 0;
+      })
+      .sample(1)
+      .value()
+
+      for(var i = 0; i < qty; i++){
+        list.push(this.create(
+          {
+            date: rand.date(),
+            level: 1,
+            isRejected: false,
+            amount: 0,
+            description: rand.fromArray(sample.description),
+            type: rand.fromArray(sample.projectType),
+            author: _.sample(creators, 1),
+            disaster: {
+              type: rand.fromArray(sample.disaster),
+              name: rand.fromArray(sample['disaster names'])
+            },
+            implementingAgency: null,
+            location: creator.address,
+            remarks: '',
+            history: [],
+            attachments: genArray(rand.int(1, 6))
+          }, creator
+
+        ));
+      }
+      return list;
+    }
+    this.genProjects = function(qty){
+      var list = [];
+      for(var i = 0; i < qty; i++){
+        list.push(this.genProject());
+      }
+      return list;
+    }
+  }
+}
+
 ////////////////////////////////////////////////////
 // Helpers
 
@@ -242,10 +300,9 @@ recon.view = function(ctrl){
       m("div", [
         m("ul"),[
           ctrl.projectList().map(function(project){
-            // console.log(ctrl.projectList())
             return m("li", [
               project.description(),
-              m("button", "hi")
+              m("button", {onclick: function(){ctrl.Users.create()}},"hi")
             ])
           }),
         ]])
