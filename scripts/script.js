@@ -39,7 +39,9 @@ var user = {
 
   // controller
   controller: function(){
+    var self = this;
     this.currentUser = new user.User();
+    this.list = [];
     this.getName = function(user){
       if(typeof(user.name) == "undefined"){
         return "Guest";
@@ -55,7 +57,7 @@ var user = {
       }).then(function(data){
         return data.results.map(function(r, index){
           r.user.level = index;
-          return new user.User(r.user);
+          self.list.push(new user.User(r.user));
         });
       });
     };
@@ -218,8 +220,8 @@ recon.controller = function(){
   self.Users = new user.controller();
   self.Projects = new project.controller();
 
-  self.userList = this.Users.genUsers();
-  self.userList.then(function(){
+  self.Users.genUsers()
+  .then(function(){
     self.Projects.genProjects(50);
   });
 }
@@ -268,7 +270,7 @@ recon.view = function(ctrl){
               ctrl.Users.getName(ctrl.Users.currentUser)
             ]),
             m("ul.dropdown", [
-              ctrl.userList().map(function(user){
+              ctrl.Users.list.map(function(user){
                 return m("li", [
                   m("a",{onclick: ctrl.Users.logIn.bind(ctrl.Users, user)}, "Login as " + ctrl.Users.getName(user))
                 ])
