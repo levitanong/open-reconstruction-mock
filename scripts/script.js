@@ -40,7 +40,7 @@ var user = {
   // controller
   controller: function(){
     var self = this;
-    this.currentUser = new user.User();
+    this.current = new user.User();
     this.list = [];
     this.getName = function(user){
       if(typeof(user.name) == "undefined"){
@@ -62,10 +62,10 @@ var user = {
       });
     };
     this.logIn = function(user){
-      this.currentUser = user;
+      this.current = user;
     };
     this.logOut = function(){
-      this.currentUser = new user.User();
+      this.current = new user.User();
     };
   }
 };
@@ -260,14 +260,14 @@ recon.view = function(ctrl){
           m("li.has-dropdown.not-click", [
             m("a[href='#']", [
               (function(){
-                console.log(ctrl.Users.currentUser);
-                if(ctrl.Users.currentUser.picture){
-                  return m("img.portrait.sml", {src: ctrl.Users.currentUser.picture()});
+                console.log(ctrl.Users.current);
+                if(ctrl.Users.current.picture){
+                  return m("img.portrait.sml", {src: ctrl.Users.current.picture()});
                 } else {
                   return "";
                 }
               })(),
-              ctrl.Users.getName(ctrl.Users.currentUser)
+              ctrl.Users.getName(ctrl.Users.current)
             ]),
             m("ul.dropdown", [
               ctrl.Users.list.map(function(user){
