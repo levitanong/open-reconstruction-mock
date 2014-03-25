@@ -394,7 +394,15 @@ projectListView.view = function(ctrl){
               ctrl.currentFilter.projects()
             ),
             m("table", [
-              ctrl.projectList().map(function(project){
+              ctrl.projectList()
+              .filter(function(p){
+                if(!ctrl.currentFilter.projects()){
+                  return true;
+                } else {
+                  return p.type() == ctrl.currentFilter.projects();
+                }
+              })
+              .map(function(project){
                 return m("tr", [
                   m("td", project.id()),
                   m("td", [
@@ -407,6 +415,9 @@ projectListView.view = function(ctrl){
           ]),
           m("div.columns.medium-3", [
             m("ul", [
+              m("li", [
+                m("button[type='button']", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
+              ]),
               ctrl.projectFilters().map(function(filter){
                 return m("li", [
                   m("button[type='button']", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, filter)}, filter)
