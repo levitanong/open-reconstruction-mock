@@ -6505,3 +6505,6 @@ a:active {
 
 ul {
   list-style: none; }
+
+table {
+  width: 100%; }
