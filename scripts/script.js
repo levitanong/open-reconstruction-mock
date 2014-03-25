@@ -1,8 +1,3 @@
-// below to be deprecated when mithril comes out with new release. Also remove config:publicAPI from genUsers request.
-var publicAPI = function(xhr){
-  xhr.withCredentials = false;
-}
-
 ////////////////////////////////////////////////////
 // Helpers
 
@@ -74,12 +69,19 @@ var sample = {
 // namespace
 
 var recon = {};
+var navMenu = {};
+var projectList = {};
+var common = {};
 var user = {
   // model
+
+  list: [],
   User: function(data){
+    var self = this;
     for(prop in data){
       this[prop] = m.prop(data[prop]);
     }
+    // this.list = [];
     this.address = m.prop({
       district: null,
       department: null,
@@ -90,31 +92,29 @@ var user = {
       barangay: null,
       sitio: null
     });
-  },
-
-  // controller
-  controller: function(){
-    var self = this;
-    this.current = new user.User();
-    this.list = [];
-    this.getName = function(user){
-      if(typeof(user.name) == "undefined"){
-        return "Guest";
-      } else {
-        return user.name().first + " " + user.name().last;
-      }
-    };
     this.genUsers = function(){
       return m.request({
         method: "GET", 
-        url: "http://api.randomuser.me/?results=5",
-        config: publicAPI
+        url: "http://api.randomuser.me/?results=5"
       }).then(function(data){
         return data.results.map(function(r, index){
           r.user.level = index;
           self.list.push(new user.User(r.user));
         });
       });
+    };
+  },
+
+  // controller
+  controller: function(){
+    var self = this;
+    this.current = new user.User();
+    this.getName = function(user){
+      if(typeof(user.name) == "undefined"){
+        return "Guest";
+      } else {
+        return user.name().first + " " + user.name().last;
+      }
     };
     this.logIn = function(user){
       this.current = user;
@@ -126,50 +126,54 @@ var user = {
 };
 
 var project = {
-  Project: function(data, user){
+  list: [],
+  Project: function(data){
     for(prop in data){
       this[prop] = m.prop(data[prop]);
     }
-    this.author = user;
+    // this.author = user;
+    // this.genProjects = function(qty, users){
+    //   var tempList = [];
+    //   var creator = _.chain(users)
+    //   .filter(function(u){
+    //     // or basically anyone who can request for projects
+    //     return u.level == 0;
+    //   })
+    //   .sample(1)
+    //   .value()
+    //   this.list = genArray(0, qty).map(function(i){
+    //     return new project.Project({
+    //       date: rand.date(),
+    //       level: 1,
+    //       isRejected: false,
+    //       amount: 0,
+    //       description: rand.fromArray(sample.description),
+    //       type: rand.fromArray(sample.projectType),
+    //       disaster: {
+    //         type: rand.fromArray(sample.disaster),
+    //         name: rand.fromArray(sample['disaster names'])
+    //       },
+    //       implementingAgency: null,
+    //       location: creator.address,
+    //       remarks: '',
+    //       history: [],
+    //       attachments: genArray(rand.int(1, 6))
+    //     }, creator);
+    //   });
+    // };
   },
   controller: function(){
-    this.list = [];
-    this.genProjects = function(qty, users){
-      var tempList = [];
-      var creator = _.chain(users)
-      .filter(function(u){
-        // or basically anyone who can request for projects
-        return u.level == 0;
-      })
-      .sample(1)
-      .value()
-      this.list = genArray(0, qty).map(function(i){
-        return new project.Project({
-          date: rand.date(),
-          level: 1,
-          isRejected: false,
-          amount: 0,
-          description: rand.fromArray(sample.description),
-          type: rand.fromArray(sample.projectType),
-          disaster: {
-            type: rand.fromArray(sample.disaster),
-            name: rand.fromArray(sample['disaster names'])
-          },
-          implementingAgency: null,
-          location: creator.address,
-          remarks: '',
-          history: [],
-          attachments: genArray(rand.int(1, 6))
-        }, creator);
-      });
-    };
+    // this.getProjects = function(){
+    //   // console.log(project.Project.list);
+    //   return project.Project.list;
+    // }
   }
 }
 
 ////////////////////////////////////////////////////
 // Controller
 
-recon.controller = function(){
+navMenu.controller = function(){
   var self = this;
   self.Users = new user.controller();
   self.Projects = new project.controller();
@@ -183,8 +187,18 @@ recon.controller = function(){
 ////////////////////////////////////////////////////
 // View
 
-recon.view = function(ctrl){
-  // nav bar
+
+common.banner = function(text){
+  return m("section.banner", [
+    m("div.row", [
+      m("div.columns.medium-12", [
+        m("h1", text)
+      ])
+    ])
+  ])
+}
+
+common.navBar = function(ctrl){
   var nav = function(){
 
     var menuItems = [
@@ -209,66 +223,152 @@ recon.view = function(ctrl){
         m("ul.left", [
           menuItems.map(menuItem)
         ]),
-        m("ul.right", [
-          menuItem({label: "Generate Sample Data"}),
-          m("li.has-dropdown.not-click", [
-            m("a[href='#']", [
-              (function(){
-                if(ctrl.Users.current.picture){
-                  return m("img.portrait.sml", {src: ctrl.Users.current.picture()});
-                } else {
-                  return "";
-                }
-              })(),
-              ctrl.Users.getName(ctrl.Users.current)
-            ]),
-            m("ul.dropdown", [
-              ctrl.Users.list.map(function(user){
-                return m("li", [
-                  m("a",{onclick: ctrl.Users.logIn.bind(ctrl.Users, user)}, "Login as " + ctrl.Users.getName(user))
-                ])
-              }),
-              m("li", [
-                m("a", {onclick:ctrl.Users.logOut.bind(ctrl)}, "Logout")
-              ])
-            ])
-          ])
-        ])
+        // m("ul.right", [
+        //   menuItem({label: "Generate Sample Data"}),
+        //   m("li.has-dropdown.not-click", [
+        //     m("a[href='#']", [
+        //       (function(){
+        //         if(ctrl.Users.current.picture){
+        //           return m("img.portrait.sml", {src: ctrl.Users.current.picture()});
+        //         } else {
+        //           return "";
+        //         }
+        //       })(),
+        //       ctrl.Users.getName(ctrl.Users.current)
+        //     ]),
+        //     m("ul.dropdown", [
+        //       ctrl.Users.list.map(function(user){
+        //         return m("li", [
+        //           m("a",{onclick: ctrl.Users.logIn.bind(ctrl.Users, user)}, "Login as " + ctrl.Users.getName(user))
+        //         ])
+        //       }),
+        //       m("li", [
+        //         m("a", {onclick:ctrl.Users.logOut.bind(ctrl)}, "Logout")
+        //       ])
+        //     ])
+        //   ])
+        // ])
       ])
     ]);
   }
+  return nav();
+}
 
-  // project list
-
-  var projList = function(){
-    return m("ul"),[
-      ctrl.Projects.list.map(function(project){
-        return m("li", [
-          project.description()
-          // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
-        ])
-      }),
-    ]
-  }
-
-  // main
+common.main = function(ctrl, template){
   return m("html", [
     m("head", [
       m("link[href='styles/css/style.css'][rel='stylesheet']")
     ]),
     m("body", [
-      nav(),
-      m("section", [
-        m("div.row", [
-          projList()
-        ])
+      common.navBar(ctrl),
+      m("div#view", [
+        template
       ])
+      // projListView()
     ])
   ])
 }
 
+projectList.controller = function(){
+  var self = this;
+  self.Users = new user.controller();
+  self.Projects = new project.controller();
+  this.projectList = [];
+
+  m.request({
+    method: "GET",
+    url: "data/CF14-RQST-Sanitized.csv",
+    deserialize: function(data){
+      return csv2json.csv.parse(data, function(d){
+        var p = {
+          date: new Date(d.DATE_REQD),
+          // code: i+1,
+          level: 1,
+          isRejected: false,
+          disaster: {
+            name: d["TYPE OF DISASTER"],
+            type: "",
+            date: "",
+            cause: null
+          },
+          author: d["REQUESTING PARTY"],
+          implementingAgency: d["RECEIPIENT"],
+          type: d["PURPOSE1"],
+          description: d["PURPOSE"],
+          amount: parseInt(d["AMT_REQD"]),
+          location: {},
+          remarks: d["REMARKS"],
+          history: [],
+          attachments: []
+        }
+        return new project.Project(p);
+      });
+    }
+  }).then(function(data){
+    self.projectList = data;
+  })
+}
+
+projectList.view = function(ctrl){
+
+  var banner = function(text){
+    return m("section.banner", [
+      m("div.row", [
+        m("div.columns.medium-12", [
+          m("h1", text)
+        ])
+      ])
+    ])
+  }
+  return common.main(ctrl, 
+    m("div", [
+      banner("List of Requested Projects"),
+      m("section", [
+        m("div.row", [
+          m("div.colums.medium-12", [
+            m("ul", [
+              ctrl.projectList.map(function(project){
+                return m("li", [
+                  project.description()
+                  // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
+                ])
+              })
+            ])
+          ])
+        ])
+      ])
+    ])
+  )
+  
+
+  // return m("div", [
+  //   banner("List of Requested Projects"),
+  //   m("section", [
+  //     m("div.row", [
+  //       m("div.colums.medium-12", [
+  //         m("ul", [
+  //           ctrl.Projects.list.map(function(project){
+  //             return m("li", [
+  //               project.description()
+  //               // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
+  //             ])
+  //           })
+  //         ])
+  //       ])
+  //     ])
+  //   ])
+  // ])
+}
+
+////////////////////////////////////////////////////
+// routes
+
+m.route(document.body, "/hi", {
+    "/hi": projectList
+});
+
 ////////////////////////////////////////////////////
 // Execution
-m.module(document, recon);
+// m.module(document, recon);
 
 
