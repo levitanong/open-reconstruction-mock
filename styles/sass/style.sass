@@ -1,7 +1,10 @@
+@import ../../bower_components/foundation/scss/foundation.scss
+@import ../../bower_components/mrmrs-colors/sass/colors
+
 @import bourbon/bourbon
 @import neat/neat
 
-@import ../../bower_components/foundation/scss/foundation.scss
+@import "variables"
 
 body
   // background-color: pink
@@ -17,3 +20,11 @@ body
   &.lrg
     height: 128px
     width: 128px
+
+.banner
+  background-color: $accent
+  margin-bottom: 20px
+  padding-top: 40px
+  padding-bottom: 20px
+  h1 
+    color: $white
