@@ -362,10 +362,13 @@ common.main = function(ctrl, template){
 
 projectListView.controller = function(){
   var self = this;
-  self.Users = new user.controller();
-  self.Projects = new project.controller();
+  this.Users = new user.controller();
+  this.Projects = new project.controller();
   this.projectList = m.prop([]);
-  this.projectFilters = m.prop([])
+  this.projectFilters = m.prop([]);
+  this.currentFilter = {
+    projects: m.prop("")
+  };
 
   dataPull.then(function(data){
     // don't use data because you don't want to override new projects. this has already been used in dataPull
@@ -373,7 +376,7 @@ projectListView.controller = function(){
     self.projectFilters = database.projectFilters;
   });
 
-  var filter = {};
+  
 
   // console.log(projectList);
 }
@@ -385,7 +388,11 @@ projectListView.view = function(ctrl){
       m("section", [
         m("div.row", [
           m("div.columns.medium-9", [
-            // m("button", {onclick: function(){console.log(ctrl.projectList())}},"refresh list"),
+            
+            m("span", 
+              {onchange: ctrl.currentFilter.projects()}, 
+              ctrl.currentFilter.projects()
+            ),
             m("table", [
               ctrl.projectList().map(function(project){
                 return m("tr", [
@@ -401,7 +408,9 @@ projectListView.view = function(ctrl){
           m("div.columns.medium-3", [
             m("ul", [
               ctrl.projectFilters().map(function(filter){
-                return m("li", filter)
+                return m("li", [
+                  m("button[type='button']", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, filter)}, filter)
+                ])
               })
             ])
           ])
