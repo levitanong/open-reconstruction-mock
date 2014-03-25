@@ -92,17 +92,16 @@ var helper = {
     return out;
   },
   commaize: function(number){
-    var res = [];
 
     var process = function(acc, arr){
-      if (acc < 1){
+      if (acc.length < 1){
         return arr;
       } else {
-        arr.push(acc % 1000)
-        return process(Math.floor(acc / 1000), arr);
+        arr.push(acc.substr(-3));
+        return process(acc.substr(0, acc.length-3), arr);
       }
     }
-    return process(number, []).reduceRight(function(acc, head){
+    return process(number + "", []).reduceRight(function(acc, head){
       if(acc == ""){
         return head + "";
       } else {
@@ -138,7 +137,8 @@ var sample = {
 
 var database = {
   projectList: [],
-  userList: []
+  userList: [],
+  projectFilters: [],
 }
 
 var dataPull = m.request({
@@ -172,6 +172,14 @@ var dataPull = m.request({
   }
 }).then(function(data){
   database.projectList = data;
+
+  database.projectFilters = _.chain(database.projectList)
+    .map(function(p){
+      return p.type();
+    })
+    .unique()
+    .compact()
+    .value()
 });
 
 ////////////////////////////////////////////////////
@@ -356,12 +364,17 @@ projectListView.controller = function(){
   var self = this;
   self.Users = new user.controller();
   self.Projects = new project.controller();
-  this.projectList = m.prop("");
+  this.projectList = m.prop([]);
+  this.projectFilters = m.prop([])
 
   dataPull.then(function(data){
     // don't use data because you don't want to override new projects. this has already been used in dataPull
     self.projectList(database.projectList);
+    self.projectFilters(database.projectFilters);
   });
+
+  var filter = {};
+
   // console.log(projectList);
 }
 
@@ -371,7 +384,7 @@ projectListView.view = function(ctrl){
       common.banner("List of Requested Projects"),
       m("section", [
         m("div.row", [
-          m("div.colums.medium-12", [
+          m("div.columns.medium-9", [
             // m("button", {onclick: function(){console.log(ctrl.projectList())}},"refresh list"),
             m("table", [
               ctrl.projectList().map(function(project){
@@ -380,8 +393,15 @@ projectListView.view = function(ctrl){
                   m("td", [
                     m("a", {href: "/projects/"+project.id(), config: m.route}, project.description())
                   ]),
-                  m("td", project.amount())
+                  m("td", helper.commaize(project.amount()))
                 ])
+              })
+            ])
+          ]),
+          m("div.columns.medium-3", [
+            m("ul", [
+              ctrl.projectFilters().map(function(filter){
+                return m("li", filter)
               })
             ])
           ])
