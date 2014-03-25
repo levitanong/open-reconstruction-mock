@@ -136,9 +136,9 @@ var sample = {
 // fake database
 
 var database = {
-  projectList: [],
-  userList: [],
-  projectFilters: [],
+  projectList: m.prop([]),
+  userList: m.prop([]),
+  projectFilters: m.prop([]),
 }
 
 var dataPull = m.request({
@@ -171,15 +171,15 @@ var dataPull = m.request({
     });
   }
 }).then(function(data){
-  database.projectList = data;
-
-  database.projectFilters = _.chain(database.projectList)
+  database.projectList(data);
+  var pFilters = _.chain(database.projectList())
     .map(function(p){
       return p.type();
     })
     .unique()
     .compact()
-    .value()
+    .value();
+  database.projectFilters(pFilters);
 });
 
 ////////////////////////////////////////////////////
@@ -369,8 +369,8 @@ projectListView.controller = function(){
 
   dataPull.then(function(data){
     // don't use data because you don't want to override new projects. this has already been used in dataPull
-    self.projectList(database.projectList);
-    self.projectFilters(database.projectFilters);
+    self.projectList = database.projectList;
+    self.projectFilters = database.projectFilters;
   });
 
   var filter = {};
