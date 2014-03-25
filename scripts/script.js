@@ -43,6 +43,74 @@ var rand = {
   }
 }
 
+var helper = {
+  truncate: function(input, place){
+    var out = "";
+    var buffer;
+    var suffix = "";
+
+    if(typeof(place) == "undefined"){
+      var place = 2;
+    }
+
+    var placeCheck = function(val, place){
+      if(typeof(place) == "undefined") place = 1;
+      if(val / 1000 < 1){
+        // this means val cannot be divided by 1000 anymore
+        return [val, place];
+      } else {
+        // val can still be divided by 1000. placeCheck again.
+        return placeCheck(val / 1000, place * 1000);
+      }
+    }
+
+    buffer = placeCheck(input);
+
+    switch(buffer[1]){
+      case Math.pow(10, 3):
+        suffix = "K";
+        break;
+      case Math.pow(10, 6):
+        suffix = "M";
+        break;
+      case Math.pow(10, 9):
+        suffix = "B";
+        break;
+      case Math.pow(10, 12):
+        suffix = "T";
+        break;
+      default:
+        suffix = "";
+        break;
+    }
+
+    var roundTo = function(num, place){
+      var p = Math.pow(10, place);
+      return Math.round(num * p) / p;
+    }
+    out = roundTo(buffer[0], place) + " " + suffix;
+    return out;
+  },
+  commaize: function(number){
+    var res = [];
+
+    var process = function(acc, arr){
+      if (acc < 1){
+        return arr;
+      } else {
+        arr.push(acc % 1000)
+        return process(Math.floor(acc / 1000), arr);
+      }
+    }
+    return process(number, []).reduceRight(function(acc, head){
+      if(acc == ""){
+        return head + "";
+      } else {
+        return acc + "," + head;
+      }
+    }, "");
+  }
+}
 
 var sample = {
   'disaster names': ['Brunhilda', 'Bantay', 'Muning', 'Dodong', 'Puring'],
@@ -66,12 +134,56 @@ var sample = {
 };
 
 ////////////////////////////////////////////////////
+// fake database
+
+var database = {
+  projectList: [],
+  userList: []
+}
+
+var dataPull = m.request({
+  method: "GET",
+  url: "data/CF14-RQST-Sanitized.csv",
+  deserialize: function(data){
+    return csv2json.csv.parse(data, function(d, i){
+      var p = {
+        date: new Date(d.DATE_REQD),
+        id: i+1,
+        level: 1,
+        isRejected: false,
+        disaster: {
+          name: d["TYPE OF DISASTER"],
+          type: "",
+          date: "",
+          cause: null
+        },
+        author: d["REQUESTING PARTY"],
+        implementingAgency: d["RECEIPIENT"],
+        type: d["PURPOSE1"],
+        description: d["PURPOSE"],
+        amount: parseInt(d["AMT_REQD"]) || 0,
+        location: {},
+        remarks: d["REMARKS"],
+        history: [],
+        attachments: []
+      }
+      return new project.Project(p);
+    });
+  }
+}).then(function(data){
+  database.projectList = data;
+});
+
+////////////////////////////////////////////////////
 // namespace
 
 var recon = {};
 var navMenu = {};
-var projectList = {};
 var common = {};
+// view  
+var projectListView = {};
+var projectDetailView = {};
+
 var user = {
   // model
 
@@ -131,36 +243,6 @@ var project = {
     for(prop in data){
       this[prop] = m.prop(data[prop]);
     }
-    // this.author = user;
-    // this.genProjects = function(qty, users){
-    //   var tempList = [];
-    //   var creator = _.chain(users)
-    //   .filter(function(u){
-    //     // or basically anyone who can request for projects
-    //     return u.level == 0;
-    //   })
-    //   .sample(1)
-    //   .value()
-    //   this.list = genArray(0, qty).map(function(i){
-    //     return new project.Project({
-    //       date: rand.date(),
-    //       level: 1,
-    //       isRejected: false,
-    //       amount: 0,
-    //       description: rand.fromArray(sample.description),
-    //       type: rand.fromArray(sample.projectType),
-    //       disaster: {
-    //         type: rand.fromArray(sample.disaster),
-    //         name: rand.fromArray(sample['disaster names'])
-    //       },
-    //       implementingAgency: null,
-    //       location: creator.address,
-    //       remarks: '',
-    //       history: [],
-    //       attachments: genArray(rand.int(1, 6))
-    //     }, creator);
-    //   });
-    // };
   },
   controller: function(){
     // this.getProjects = function(){
@@ -176,12 +258,12 @@ var project = {
 navMenu.controller = function(){
   var self = this;
   self.Users = new user.controller();
-  self.Projects = new project.controller();
+  // self.Projects = new project.controller();
 
-  self.Users.genUsers()
-  .then(function(){
-    self.Projects.genProjects(50);
-  });
+  // self.Users.genUsers()
+  // .then(function(){
+  //   self.Projects.genProjects(50);
+  // });
 }
 
 ////////////////////////////////////////////////////
@@ -203,12 +285,12 @@ common.navBar = function(ctrl){
 
     var menuItems = [
       {label: "Overview", url: "#"},
-      {label: "Projects", url: "#"}
+      {label: "Projects", url: "/projects"}
     ]
 
     var menuItem = function(data){
       if(!data.url) data.url = "#";
-      return m("li", [m("a", {href: data.url}, data.label)]);
+      return m("li", [m("a", {href: data.url, config: m.route}, data.label)]);
     }
 
     return m("nav.top-bar[data-topbar]", [
@@ -257,80 +339,48 @@ common.navBar = function(ctrl){
 common.main = function(ctrl, template){
   return m("html", [
     m("head", [
-      m("link[href='styles/css/style.css'][rel='stylesheet']")
+      m("link[href='styles/css/style.css'][rel='stylesheet'][type='text/css']"),
+      m("link[href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700'][rel='stylesheet'][type='text/css']"),
+      m("link[href='bower_components/font-awesome/css/font-awesome.min.css'][rel='stylesheet'][type='text/css']"),
     ]),
     m("body", [
       common.navBar(ctrl),
       m("div#view", [
         template
       ])
-      // projListView()
     ])
   ])
 }
 
-projectList.controller = function(){
+projectListView.controller = function(){
   var self = this;
   self.Users = new user.controller();
   self.Projects = new project.controller();
-  this.projectList = [];
+  this.projectList = m.prop("");
 
-  m.request({
-    method: "GET",
-    url: "data/CF14-RQST-Sanitized.csv",
-    deserialize: function(data){
-      return csv2json.csv.parse(data, function(d){
-        var p = {
-          date: new Date(d.DATE_REQD),
-          // code: i+1,
-          level: 1,
-          isRejected: false,
-          disaster: {
-            name: d["TYPE OF DISASTER"],
-            type: "",
-            date: "",
-            cause: null
-          },
-          author: d["REQUESTING PARTY"],
-          implementingAgency: d["RECEIPIENT"],
-          type: d["PURPOSE1"],
-          description: d["PURPOSE"],
-          amount: parseInt(d["AMT_REQD"]),
-          location: {},
-          remarks: d["REMARKS"],
-          history: [],
-          attachments: []
-        }
-        return new project.Project(p);
-      });
-    }
-  }).then(function(data){
-    self.projectList = data;
-  })
+  dataPull.then(function(data){
+    // don't use data because you don't want to override new projects. this has already been used in dataPull
+    self.projectList(database.projectList);
+  });
+  // console.log(projectList);
 }
 
-projectList.view = function(ctrl){
-
-  var banner = function(text){
-    return m("section.banner", [
-      m("div.row", [
-        m("div.columns.medium-12", [
-          m("h1", text)
-        ])
-      ])
-    ])
-  }
+projectListView.view = function(ctrl){
   return common.main(ctrl, 
     m("div", [
-      banner("List of Requested Projects"),
+      common.banner("List of Requested Projects"),
       m("section", [
         m("div.row", [
           m("div.colums.medium-12", [
-            m("ul", [
-              ctrl.projectList.map(function(project){
-                return m("li", [
-                  project.description()
-                  // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
+            // m("button", {onclick: function(){console.log(ctrl.projectList())}},"refresh list"),
+            m("table", [
+              ctrl.projectList().map(function(project){
+                return m("tr", [
+                  m("td", project.id()),
+                  m("td", [
+                    m("a", {href: "/projects/"+project.id(), config: m.route}, project.description())
+                  ]),
+                  m("td", project.amount())
                 ])
               })
             ])
@@ -339,32 +389,31 @@ projectList.view = function(ctrl){
       ])
     ])
   )
-  
+}
 
-  // return m("div", [
-  //   banner("List of Requested Projects"),
-  //   m("section", [
-  //     m("div.row", [
-  //       m("div.colums.medium-12", [
-  //         m("ul", [
-  //           ctrl.Projects.list.map(function(project){
-  //             return m("li", [
-  //               project.description()
-  //               // m("button", {onclick: function(){ctrl.Users.create()}},"hi")
-  //             ])
-  //           })
-  //         ])
-  //       ])
-  //     ])
-  //   ])
-  // ])
+projectDetailView.controller = function(){
+  var self = this;
+  this.id = m.route.param("id");
+  this.project = m.prop({});
+  dataPull.then(function(data){
+    self.project(database.projectList[self.id - 1]);
+  })
+}
+
+projectDetailView.view = function(ctrl){
+  return common.main(ctrl,
+    m("div.row", [
+      console.log(ctrl.project())
+    ])
+  )
 }
 
 ////////////////////////////////////////////////////
 // routes
 
-m.route(document.body, "/hi", {
-    "/hi": projectList
+m.route(document.body, "/projects", {
+    "/projects": projectListView,
+    "/projects/:id": projectDetailView
 });
 
 ////////////////////////////////////////////////////
