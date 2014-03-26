@@ -430,6 +430,7 @@ projectListView.view = function(ctrl){
             ])
           ]),
           m("div.columns.medium-3", [
+            m("a.button", "New Request"),
             m("ul", [
               m("li", [
                 m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
