@@ -396,23 +396,16 @@ projectListView.view = function(ctrl){
               m("dd", [m("a", "OP")]),
               m("dd", [m("a", "DBM")]),
             ]),
-            
-            // <dl class="tabs" data-tab>
-            //   <dd class="active"><a href="#panel2-1">Tab 1</a></dd>
-            //   <dd><a href="#panel2-2">Tab 2</a></dd>
-            //   <dd><a href="#panel2-3">Tab 3</a></dd>
-            //   <dd><a href="#panel2-4">Tab 4</a></dd>
-            // </dl>
-            m("span", 
-              {onchange: ctrl.currentFilter.projects()}, 
-              ctrl.currentFilter.projects()
-            ),
+            // m("span", 
+            //   {onchange: ctrl.currentFilter.projects()}, 
+            //   ctrl.currentFilter.projects()
+            // ),
             m("table", [
               m("thead", [
                 m("tr", [
                   m("th", "id"),
                   m("th", "name"),
-                  m("th", "amount")
+                  m("th.text-right", "amount")
                 ])
               ]),
               m("tbody", [
@@ -430,7 +423,7 @@ projectListView.view = function(ctrl){
                     m("td", [
                       m("a", {href: "/projects/"+project.id(), config: m.route}, project.description())
                     ]),
-                    m("td", helper.commaize(project.amount()))
+                    m("td.text-right", helper.commaize(project.amount()))
                   ])
                 })
               ])
