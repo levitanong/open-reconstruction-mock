@@ -190,9 +190,6 @@ var dataPull = function(){
 var recon = {};
 var navMenu = {};
 var common = {};
-// view  
-var projectListView = {};
-var projectDetailView = {};
 
 var user = {
   // model
@@ -360,6 +357,8 @@ common.main = function(ctrl, template){
   ])
 }
 
+projectListView = {};
+
 projectListView.controller = function(){
   var self = this;
   this.Users = new user.controller();
@@ -396,10 +395,6 @@ projectListView.view = function(ctrl){
               m("dd", [m("a", "OP")]),
               m("dd", [m("a", "DBM")]),
             ]),
-            // m("span", 
-            //   {onchange: ctrl.currentFilter.projects()}, 
-            //   ctrl.currentFilter.projects()
-            // ),
             m("table", [
               m("thead", [
                 m("tr", [
@@ -430,7 +425,7 @@ projectListView.view = function(ctrl){
             ])
           ]),
           m("div.columns.medium-3", [
-            m("a.button", "New Request"),
+            m("a.button", {href: "/new", config: m.route}, "New Request"),
             m("ul", [
               m("li", [
                 m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
@@ -447,6 +442,8 @@ projectListView.view = function(ctrl){
     ])
   )
 }
+
+projectDetailView = {};
 
 projectDetailView.controller = function(){
   var self = this;
@@ -486,12 +483,75 @@ projectDetailView.view = function(ctrl){
   )
 }
 
+projectCreateView = {};
+
+projectCreateView.controller = function(){
+
+}
+
+projectCreateView.view = function(ctrl){
+
+  var formSection = function(icon, content, help, i){
+    var alternate = function(i){
+      if(i % 2 == 1){
+        return "alt";
+      } else {
+        return "";
+      }
+    }
+    return m("section", {"class": alternate(i)}, [
+      m("div.row", [
+        m("div.columns.medium-2", [
+          m("i.fa.fa-5x.fa-fw", {"class": icon})
+        ]),
+        m("div.columns.medium-7", content),
+        m("div.columns.medium-3", [m("p", help)])
+      ])
+    ])
+  }
+
+  var sections = [
+    {
+      icon: "fa-cloud",
+      content: [
+        m("h2", "Disaster"),
+        m("label", [
+          "Disaster Name",
+          m("input", {type: 'text', placeholder: 'Yolanda, Pepeng, Piping, Popong, etc...'})
+        ])
+      ],
+      help: "Specify the disaster to give everyone context about your request. Insert all these other details etc..."
+    },
+    {
+      icon: "fa-map-marker",
+      content: [
+        m("h2", "Location"),
+        m("label", [
+          "hi"
+        ])
+      ],
+      help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
+    }
+  ]
+  return common.main(ctrl,
+    m("div#view", [
+      common.banner("New Project Request"),
+      m("form", 
+        sections.map(function(s, i){
+          return formSection(s.icon, s.content, s.help, i);
+        })
+      )
+    ])
+  )
+}
+
 ////////////////////////////////////////////////////
 // routes
 
 m.route(document.body, "/projects", {
     "/projects": projectListView,
-    "/projects/:id": projectDetailView
+    "/projects/:id": projectDetailView,
+    "/new": projectCreateView
 });
 
 ////////////////////////////////////////////////////

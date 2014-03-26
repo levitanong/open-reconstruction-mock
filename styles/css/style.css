@@ -3464,22 +3464,6 @@ th.hide-for-touch {
 .black {
   color: #111111; }
 
-/* Prettier Links */
-a {
-  transition: color .3s ease-in-out; }
-
-a:link {
-  color: #0074d9; }
-
-a:visited {
-  color: #b10dc9; }
-
-a:hover {
-  color: #7fdbff; }
-
-a:active {
-  color: #ff851b; }
-
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -3514,3 +3498,9 @@ table {
 
 h1 {
   font-weight: bold; }
+
+form section {
+  padding-top: 20px;
+  padding-bottom: 20px; }
+  form section.alt {
+    background-color: #f4f4f4; }
