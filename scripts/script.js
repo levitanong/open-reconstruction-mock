@@ -389,7 +389,20 @@ projectListView.view = function(ctrl){
       m("section", [
         m("div.row", [
           m("div.columns.medium-9", [
+            m("dl.tabs[data-tab]", [
+              m("dd", [m("a", "All")]),
+              m("dd.active", [m("a", "NDRRMC")]),
+              m("dd", [m("a", "DPWH")]),
+              m("dd", [m("a", "OP")]),
+              m("dd", [m("a", "DBM")]),
+            ]),
             
+            // <dl class="tabs" data-tab>
+            //   <dd class="active"><a href="#panel2-1">Tab 1</a></dd>
+            //   <dd><a href="#panel2-2">Tab 2</a></dd>
+            //   <dd><a href="#panel2-3">Tab 3</a></dd>
+            //   <dd><a href="#panel2-4">Tab 4</a></dd>
+            // </dl>
             m("span", 
               {onchange: ctrl.currentFilter.projects()}, 
               ctrl.currentFilter.projects()
@@ -426,11 +439,11 @@ projectListView.view = function(ctrl){
           m("div.columns.medium-3", [
             m("ul", [
               m("li", [
-                m("button[type='button']", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
+                m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
               ]),
               ctrl.projectFilters().map(function(filter){
                 return m("li", [
-                  m("button[type='button']", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, filter)}, filter)
+                  m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, filter)}, filter)
                 ])
               })
             ])
@@ -458,21 +471,22 @@ projectDetailView.view = function(ctrl){
         m("h1", ctrl.project().description()),
         m("div.row", [
           m("div.columns.medium-4", [
+            m("h4", "Amount"),
+            helper.commaize(ctrl.project().amount())
+          ]),
+          m("div.columns.medium-4", [
             m("h4", "Author"),
             ctrl.project().author()
           ]),
           m("div.columns.medium-4", [
             m("h4", "Type"),
             ctrl.project().type()
-          ]),
-          m("div.columns.medium-4", [
-            m("h4", "Amount"),
-            helper.commaize(ctrl.project().amount())
           ])
         ])
       ]),
       m("div.columns.medium-3", [
-        console.log(ctrl.project())
+        ctrl.project().disaster().name,
+        console.log(ctrl.project().disaster())
       ])
     ])
   )
