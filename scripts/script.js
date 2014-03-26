@@ -287,7 +287,7 @@ common.banner = function(text){
         m("h1", text)
       ])
     ])
-  ])
+  ]);
 }
 
 common.navBar = function(ctrl){
@@ -355,9 +355,7 @@ common.main = function(ctrl, template){
     ]),
     m("body", [
       common.navBar(ctrl),
-      m("div#view", [
-        template
-      ])
+      template
     ])
   ])
 }
@@ -384,8 +382,10 @@ projectListView.controller = function(){
 
 projectListView.view = function(ctrl){
   return common.main(ctrl, 
-    m("div", [
+    m("div#view", [
       common.banner("List of Requested Projects"),
+      // m("h2", "hi"),
+      // console.log("hi"),
       m("section", [
         m("div.row", [
           m("div.columns.medium-9", [
@@ -395,23 +395,32 @@ projectListView.view = function(ctrl){
               ctrl.currentFilter.projects()
             ),
             m("table", [
-              ctrl.projectList()
-              .filter(function(p){
-                if(!ctrl.currentFilter.projects()){
-                  return true;
-                } else {
-                  return p.type() == ctrl.currentFilter.projects();
-                }
-              })
-              .map(function(project){
-                return m("tr", [
-                  m("td", project.id()),
-                  m("td", [
-                    m("a", {href: "/projects/"+project.id(), config: m.route}, project.description())
-                  ]),
-                  m("td", helper.commaize(project.amount()))
+              m("thead", [
+                m("tr", [
+                  m("th", "id"),
+                  m("th", "name"),
+                  m("th", "amount")
                 ])
-              })
+              ]),
+              m("tbody", [
+                ctrl.projectList()
+                .filter(function(p){
+                  if(!ctrl.currentFilter.projects()){
+                    return true;
+                  } else {
+                    return p.type() == ctrl.currentFilter.projects();
+                  }
+                })
+                .map(function(project){
+                  return m("tr", [
+                    m("td", project.id()),
+                    m("td", [
+                      m("a", {href: "/projects/"+project.id(), config: m.route}, project.description())
+                    ]),
+                    m("td", helper.commaize(project.amount()))
+                  ])
+                })
+              ])
             ])
           ]),
           m("div.columns.medium-3", [
