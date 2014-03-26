@@ -444,7 +444,27 @@ projectDetailView.controller = function(){
 projectDetailView.view = function(ctrl){
   return common.main(ctrl,
     m("div.row", [
-      console.log(ctrl.project())
+      m("div.columns.medium-9", [
+        m("h4", ctrl.project().date()),
+        m("h1", ctrl.project().description()),
+        m("div.row", [
+          m("div.columns.medium-4", [
+            m("h4", "Author"),
+            ctrl.project().author()
+          ]),
+          m("div.columns.medium-4", [
+            m("h4", "Type"),
+            ctrl.project().type()
+          ]),
+          m("div.columns.medium-4", [
+            m("h4", "Amount"),
+            helper.commaize(ctrl.project().amount())
+          ])
+        ])
+      ]),
+      m("div.columns.medium-3", [
+        console.log(ctrl.project())
+      ])
     ])
   )
 }
