@@ -291,7 +291,7 @@ common.navBar = function(ctrl){
   var nav = function(){
 
     var menuItems = [
-      {label: "Overview", url: "#"},
+      {label: "Overview", url: "/dashboard"},
       {label: "Projects", url: "/projects"}
     ]
 
@@ -357,6 +357,23 @@ common.main = function(ctrl, template){
   ])
 }
 
+common.tabs = function(arr){
+  return m("dl.tabs[data-tab]", [
+    arr.map(function(item, i){
+      var setActive = function(i){
+        if(i == 0){
+          return "active";
+        } else {
+          return "";
+        }
+      };
+      return m("dd", {class: setActive(i)}, [
+        m("a", item.label)
+      ]);
+    })
+  ])
+}
+
 projectListView = {};
 
 projectListView.controller = function(){
@@ -380,21 +397,30 @@ projectListView.controller = function(){
 }
 
 projectListView.view = function(ctrl){
+  var tabs = [
+    {
+      label: "All"
+    },
+    {
+      label: "NDRRMC"
+    },
+    {
+      label: "DPWH"
+    },
+    {
+      label: "OP"
+    },
+    {
+      label: "DBM"
+    }
+  ];
   return common.main(ctrl, 
     m("div#view", [
       common.banner("List of Requested Projects"),
-      // m("h2", "hi"),
-      // console.log("hi"),
       m("section", [
         m("div.row", [
           m("div.columns.medium-9", [
-            m("dl.tabs[data-tab]", [
-              m("dd", [m("a", "All")]),
-              m("dd.active", [m("a", "NDRRMC")]),
-              m("dd", [m("a", "DPWH")]),
-              m("dd", [m("a", "OP")]),
-              m("dd", [m("a", "DBM")]),
-            ]),
+            common.tabs(tabs),
             m("table", [
               m("thead", [
                 m("tr", [
@@ -456,28 +482,39 @@ projectDetailView.controller = function(){
 
 projectDetailView.view = function(ctrl){
   return common.main(ctrl,
-    m("div.row", [
-      m("div.columns.medium-9", [
-        m("h4", ctrl.project().date()),
-        m("h1", ctrl.project().description()),
-        m("div.row", [
-          m("div.columns.medium-4", [
-            m("h4", "Amount"),
-            helper.commaize(ctrl.project().amount())
-          ]),
-          m("div.columns.medium-4", [
-            m("h4", "Author"),
-            ctrl.project().author()
-          ]),
-          m("div.columns.medium-4", [
-            m("h4", "Type"),
-            ctrl.project().type()
-          ])
+    m("div#view", [
+      m("div.row", [
+        m("div.columns.medium-12", [
+          m("h4", ctrl.project().date()),
+          m("h1", ctrl.project().description()),
         ])
       ]),
-      m("div.columns.medium-3", [
-        ctrl.project().disaster().name,
-        console.log(ctrl.project().disaster())
+      m("div.row", [
+        m("div.columns.medium-3", [
+          m("h4", "Amount"),
+          helper.commaize(ctrl.project().amount())
+        ]),
+        m("div.columns.medium-3", [
+          m("h4", "Author"),
+          ctrl.project().author()
+        ]),
+        m("div.columns.medium-3", [
+          m("h4", "Type"),
+          ctrl.project().type()
+        ]),
+        m("div.columns.medium-3", [
+          m("h4", "Disaster"),
+          ctrl.project().disaster().name
+        ])
+      ]),
+      m("hr"),
+      m("div.row", [
+        m("div.columns.medium-9", [
+          "conversations"
+        ]),
+        m("div.columns.medium-3", [
+          "attachment list"
+        ])
       ])
     ])
   )
@@ -531,6 +568,16 @@ projectCreateView.view = function(ctrl){
         ])
       ],
       help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
+    },
+    {
+      icon: "fa-briefcase",
+      content: [
+        m("h2", "Project"),
+        m("label", [
+          "hi"
+        ])
+      ],
+      help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
     }
   ]
   return common.main(ctrl,
@@ -545,13 +592,29 @@ projectCreateView.view = function(ctrl){
   )
 }
 
+dashboardView = {}
+
+dashboardView.controller = function(){
+
+}
+
+dashboardView.view = function(ctrl){
+  return common.main(ctrl,
+    common.banner("Dashboard"),
+    m("div#view", [
+      
+    ])
+  )
+}
+
 ////////////////////////////////////////////////////
 // routes
 
 m.route(document.body, "/projects", {
     "/projects": projectListView,
     "/projects/:id": projectDetailView,
-    "/new": projectCreateView
+    "/new": projectCreateView,
+    "/dashboard": dashboardView
 });
 
 ////////////////////////////////////////////////////
