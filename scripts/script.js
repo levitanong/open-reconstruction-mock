@@ -141,46 +141,48 @@ var database = {
   projectFilters: m.prop([]),
 }
 
-var dataPull = m.request({
-  method: "GET",
-  url: "data/CF14-RQST-Sanitized.csv",
-  deserialize: function(data){
-    return csv2json.csv.parse(data, function(d, i){
-      var p = {
-        date: new Date(d.DATE_REQD),
-        id: i+1,
-        level: 1,
-        isRejected: false,
-        disaster: {
-          name: d["TYPE OF DISASTER"],
-          type: "",
-          date: "",
-          cause: null
-        },
-        author: d["REQUESTING PARTY"],
-        implementingAgency: d["RECEIPIENT"],
-        type: d["PURPOSE1"],
-        description: d["PURPOSE"],
-        amount: parseInt(d["AMT_REQD"]) || 0,
-        location: {},
-        remarks: d["REMARKS"],
-        history: [],
-        attachments: []
-      }
-      return new project.Project(p);
-    });
-  }
-}).then(function(data){
-  database.projectList(data);
-  var pFilters = _.chain(database.projectList())
-    .map(function(p){
-      return p.type();
-    })
-    .unique()
-    .compact()
-    .value();
-  database.projectFilters(pFilters);
-});
+var dataPull = function(){
+  return m.request({
+    method: "GET",
+    url: "data/CF14-RQST-Sanitized.csv",
+    deserialize: function(data){
+      return csv2json.csv.parse(data, function(d, i){
+        var p = {
+          date: new Date(d.DATE_REQD),
+          id: i+1,
+          level: 1,
+          isRejected: false,
+          disaster: {
+            name: d["TYPE OF DISASTER"],
+            type: "",
+            date: "",
+            cause: null
+          },
+          author: d["REQUESTING PARTY"],
+          implementingAgency: d["RECEIPIENT"],
+          type: d["PURPOSE1"],
+          description: d["PURPOSE"],
+          amount: parseInt(d["AMT_REQD"]) || 0,
+          location: {},
+          remarks: d["REMARKS"],
+          history: [],
+          attachments: []
+        }
+        return new project.Project(p);
+      });
+    }
+  }).then(function(data){
+    database.projectList(data);
+    var pFilters = _.chain(database.projectList())
+      .map(function(p){
+        return p.type();
+      })
+      .unique()
+      .compact()
+      .value();
+    database.projectFilters(pFilters);
+  });
+}
 
 ////////////////////////////////////////////////////
 // namespace
@@ -370,12 +372,11 @@ projectListView.controller = function(){
     projects: m.prop("")
   };
 
-  dataPull.then(function(data){
+  dataPull().then(function(data){
     // don't use data because you don't want to override new projects. this has already been used in dataPull
     self.projectList = database.projectList;
     self.projectFilters = database.projectFilters;
   });
-
   
 
   // console.log(projectList);
@@ -435,8 +436,8 @@ projectDetailView.controller = function(){
   var self = this;
   this.id = m.route.param("id");
   this.project = m.prop({});
-  dataPull.then(function(data){
-    self.project(database.projectList[self.id - 1]);
+  dataPull().then(function(data){
+    self.project(database.projectList()[self.id - 1]);
   })
 }
 
