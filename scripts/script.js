@@ -215,9 +215,13 @@ var dataPull = function(){
 var recon = {};
 var navMenu = {};
 var common = {};
-var process = {};
 
-process.steps = {
+var process = {
+  steps: m.prop({}),
+  permissions: m.prop({})
+};
+
+process.steps({
   5: "request", // user makes request
   10: "sorting", // system receives request from requesting party. assign to appropriate validating agency.
   20: "validation", // validating agency checks to see if request is valid. i.e. did shit really happen?
@@ -225,17 +229,17 @@ process.steps = {
   40: "recommendation", // this is what should be done
   50: "approval", // okay, do it.
   60: "allocation" // here's the money you're allowed to spend to do it.
-}
+})
 
-process.permissions = {
+process.permissions({
   "LGU": [5],
   "GOCC": [5],
   "NGA": [5], // clarify with stella
   "NDRRMC": [10, 40],
   "DPWH": [20, 30],
-  "DBM": [40, 60],
+  "DBM": [10, 40, 60],
   "OP": [50]
-}
+})
 
 var user = {
   // model
