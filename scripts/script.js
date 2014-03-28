@@ -219,13 +219,34 @@ var common = {};
 var process = {};
 
 process.steps = m.prop({
-  5: "request", // user makes request
-  10: "sorting", // system receives request from requesting party. assign to appropriate validating agency.
-  20: "validation", // validating agency checks to see if request is valid. i.e. did shit really happen?
-  30: "assessment", // go see what should be done
-  40: "recommendation", // this is what should be done
-  50: "approval", // okay, do it.
-  60: "allocation" // here's the money you're allowed to spend to do it.
+  5: { // user makes request.
+    pending: "requesting",
+    completed: "requested"
+  }, 
+  10: { // assign to appropriate validating agency.
+    pending: "sorting",
+    completed: "sorted"
+  }, 
+  20: { // validating agency checks to see if request is valid. i.e. did shit really happen?
+    pending: "confirming",
+    completed: "confirmed"
+  }, 
+  30: { // go see what should be done (maybe should be merged with validating/confirmation)
+    pending: "assessing",
+    completed: "assessed"
+  },
+  40: { // this is what should be done
+    pending: "recommending",
+    completed: "recommended"
+  },
+  50: {  // okay, do it.
+    pending: "approving",
+    completed: "approved"
+  },
+  60: { // here's the money you're allowed to spend to do it.
+    pending: "allocating",
+    completed: "allocated"
+  }
 });
 
 process.permissions = m.prop({
@@ -424,22 +445,16 @@ projectListView.controller = function(){
 }
 
 projectListView.view = function(ctrl){
+  // var tabs = [
+  //   {label: "All"},
+  //   {label: "NDRRMC"},
+  //   {label: "DPWH"},
+  //   {label: "OP"},
+  //   {label: "DBM"}
+  // ];
   var tabs = [
-    {
-      label: "All"
-    },
-    {
-      label: "NDRRMC"
-    },
-    {
-      label: "DPWH"
-    },
-    {
-      label: "OP"
-    },
-    {
-      label: "DBM"
-    }
+    {label: "All"},
+    {label: "Assigned to Me"}
   ];
   return common.main(ctrl, 
     m("div#view", [
