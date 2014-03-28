@@ -386,6 +386,8 @@ common.main = function(ctrl, template){
       m("link[href='styles/css/style.css'][rel='stylesheet'][type='text/css']"),
       m("link[href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700'][rel='stylesheet'][type='text/css']"),
       m("link[href='bower_components/font-awesome/css/font-awesome.min.css'][rel='stylesheet'][type='text/css']"),
+      m("link[href='bower_components/leaflet/leaflet.css'][rel='stylesheet'][type='text/css']"),
+      m("link[href='bower_components/leaflet-draw/leaflet.draw.css'][rel='stylesheet'][type='text/css']")
     ]),
     m("body", [
       common.navBar(ctrl),
@@ -601,9 +603,7 @@ projectCreateView.view = function(ctrl){
       icon: "fa-map-marker",
       content: [
         m("h2", "Location"),
-        m("label", [
-          "hi"
-        ])
+        m("#map")
       ],
       help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
     },
@@ -618,6 +618,23 @@ projectCreateView.view = function(ctrl){
       help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
     }
   ]
+
+  if(document.getElementById("map")){
+    var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
+
+
+    // create the tile layer with correct attribution
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
+
+    // start the map in South-East England
+    map.setView(new L.LatLng(51.3, 0.7),9);
+    map.addLayer(osm);
+
+    L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
+  }
+
   return common.main(ctrl,
     m("div#view", [
       common.banner("New Project Request"),

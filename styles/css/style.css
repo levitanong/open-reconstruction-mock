@@ -3504,3 +3504,6 @@ form section {
   padding-bottom: 20px; }
   form section.alt {
     background-color: #f4f4f4; }
+
+#map {
+  height: 384px; }
