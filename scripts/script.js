@@ -147,6 +147,31 @@ var dataPull = function(){
     url: "data/CF14-RQST-Sanitized.csv",
     deserialize: function(data){
       return csv2json.csv.parse(data, function(d, i){
+
+        var author = {}
+
+        var address = {
+          sitio: d.SITIO,
+          town: d.TOWN,
+          province: d.PROVINCE,
+          barangay: d.BARANGAY,
+          city: d.CITY,
+          region: d.REG
+        };
+
+        switch(d.CODE){
+          case "LGU":
+            author = new user.LGU(d["REQUESTING PARTY"], address)
+            break;
+          case "NGA":
+            author = new user.NGA(d["REQUESTING PARTY"], d.DEPT)
+            break;
+        }
+
+        if(!database.userList().filter(function(u){return u.name === author.name}).length){
+          database.userList(database.userList().concat(author));
+        }
+        
         var p = {
           date: new Date(d.DATE_REQD),
           id: i+1,
@@ -158,7 +183,7 @@ var dataPull = function(){
             date: "",
             cause: null
           },
-          author: d["REQUESTING PARTY"],
+          author: author,
           implementingAgency: d["RECEIPIENT"],
           type: d["PURPOSE1"],
           description: d["PURPOSE"],
@@ -193,56 +218,68 @@ var common = {};
 
 var user = {
   // model
-
-  list: [],
-  User: function(data){
-    var self = this;
-    for(prop in data){
-      this[prop] = m.prop(data[prop]);
-    }
-    // this.list = [];
-    this.address = m.prop({
-      district: null,
-      department: null,
-      region: 8,
-      province: 'Western Samar',
-      city: null,
-      town: 'Daram',
-      barangay: null,
-      sitio: null
-    });
-    this.genUsers = function(){
-      return m.request({
-        method: "GET", 
-        url: "http://api.randomuser.me/?results=5"
-      }).then(function(data){
-        return data.results.map(function(r, index){
-          r.user.level = index;
-          self.list.push(new user.User(r.user));
-        });
-      });
-    };
+  LGU: function(name, address){
+    this.name = name;
+    this.address = address;
   },
-
-  // controller
-  controller: function(){
-    var self = this;
-    this.current = new user.User();
-    this.getName = function(user){
-      if(typeof(user.name) == "undefined"){
-        return "Guest";
-      } else {
-        return user.name().first + " " + user.name().last;
-      }
-    };
-    this.logIn = function(user){
-      this.current = user;
-    };
-    this.logOut = function(){
-      this.current = new user.User();
-    };
+  NGA: function(name, department){
+    this.name = name;
+    this.department = department;
   }
-};
+}
+
+// var user = {
+//   // model
+
+//   list: [],
+//   User: function(data){
+//     var self = this;
+//     for(prop in data){
+//       this[prop] = m.prop(data[prop]);
+//     }
+//     // this.list = [];
+//     this.address = m.prop({
+//       district: null,
+//       department: null,
+//       region: 8,
+//       province: 'Western Samar',
+//       city: null,
+//       town: 'Daram',
+//       barangay: null,
+//       sitio: null
+//     });
+//     this.genUsers = function(){
+//       return m.request({
+//         method: "GET", 
+//         url: "http://api.randomuser.me/?results=5"
+//       }).then(function(data){
+//         return data.results.map(function(r, index){
+//           r.user.level = index;
+//           self.list.push(new user.User(r.user));
+//         });
+//       });
+//     };
+//   },
+
+//   // controller
+//   controller: function(){
+//     var self = this;
+//     this.current = new user.User();
+//     this.getName = function(user){
+//       if(typeof(user.name) == "undefined"){
+//         return "Guest";
+//       } else {
+//         return user.name().first + " " + user.name().last;
+//       }
+//     };
+//     this.logIn = function(user){
+//       this.current = user;
+//     };
+//     this.logOut = function(){
+//       this.current = new user.User();
+//     };
+//   }
+// };
 
 var project = {
   list: [],
@@ -378,7 +415,7 @@ projectListView = {};
 
 projectListView.controller = function(){
   var self = this;
-  this.Users = new user.controller();
+  // this.Users = new user.controller();
   this.Projects = new project.controller();
   this.projectList = m.prop([]);
   this.projectFilters = m.prop([]);
@@ -496,7 +533,7 @@ projectDetailView.view = function(ctrl){
         ]),
         m("div.columns.medium-3", [
           m("h4", "Author"),
-          ctrl.project().author()
+          ctrl.project().author().name
         ]),
         m("div.columns.medium-3", [
           m("h4", "Type"),
