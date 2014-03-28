@@ -215,8 +215,9 @@ var dataPull = function(){
 var recon = {};
 var navMenu = {};
 var common = {};
+var process = {};
 
-recon.approvalSteps = {
+process.steps = {
   5: "request", // user makes request
   10: "sorting", // system receives request from requesting party. assign to appropriate validating agency.
   20: "validation", // validating agency checks to see if request is valid. i.e. did shit really happen?
@@ -226,7 +227,7 @@ recon.approvalSteps = {
   60: "allocation" // here's the money you're allowed to spend to do it.
 }
 
-recon.approvalPermissions = {
+process.permissions = {
   "LGU": [5],
   "GOCC": [5],
   "NGA": [5], // clarify with stella
