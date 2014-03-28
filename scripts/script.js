@@ -221,31 +221,38 @@ var process = {};
 process.steps = m.prop({
   5: { // user makes request.
     pending: "requesting",
-    completed: "requested"
+    completed: "requested",
+    label: "request"
   }, 
   10: { // assign to appropriate validating agency.
     pending: "sorting",
-    completed: "sorted"
+    completed: "sorted",
+    label: "sort"
   }, 
   20: { // validating agency checks to see if request is valid. i.e. did shit really happen?
     pending: "confirming",
-    completed: "confirmed"
+    completed: "confirmed",
+    label: "confirmation"
   }, 
   30: { // go see what should be done (maybe should be merged with validating/confirmation)
     pending: "assessing",
-    completed: "assessed"
+    completed: "assessed",
+    label: "assessment"
   },
   40: { // this is what should be done
     pending: "recommending",
-    completed: "recommended"
+    completed: "recommended",
+    label: "recommendation"
   },
   50: {  // okay, do it.
     pending: "approving",
-    completed: "approved"
+    completed: "approved",
+    label: "approval"
   },
   60: { // here's the money you're allowed to spend to do it.
     pending: "allocating",
-    completed: "allocated"
+    completed: "allocated",
+    label: "allocation"
   }
 });
 
