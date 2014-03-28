@@ -175,7 +175,7 @@ var dataPull = function(){
         var p = {
           date: new Date(d.DATE_REQD),
           id: i+1,
-          level: 1,
+          level: 0,
           isRejected: false,
           disaster: {
             name: d["TYPE OF DISASTER"],
@@ -322,6 +322,25 @@ common.banner = function(text){
       ])
     ])
   ]);
+}
+
+common.formSection = function(icon, content, help, i){
+  var alternate = function(i){
+    if(i % 2 == 1){
+      return "alt";
+    } else {
+      return "";
+    }
+  }
+  return m("section", {"class": alternate(i)}, [
+    m("div.row", [
+      m("div.columns.medium-2", [
+        m("i.fa.fa-5x.fa-fw", {"class": icon})
+      ]),
+      m("div.columns.medium-7", content),
+      m("div.columns.medium-3", [m("p", help)])
+    ])
+  ])
 }
 
 common.navBar = function(ctrl){
@@ -568,25 +587,6 @@ projectCreateView.controller = function(){
 
 projectCreateView.view = function(ctrl){
 
-  var formSection = function(icon, content, help, i){
-    var alternate = function(i){
-      if(i % 2 == 1){
-        return "alt";
-      } else {
-        return "";
-      }
-    }
-    return m("section", {"class": alternate(i)}, [
-      m("div.row", [
-        m("div.columns.medium-2", [
-          m("i.fa.fa-5x.fa-fw", {"class": icon})
-        ]),
-        m("div.columns.medium-7", content),
-        m("div.columns.medium-3", [m("p", help)])
-      ])
-    ])
-  }
-
   var sections = [
     {
       icon: "fa-cloud",
@@ -640,17 +640,17 @@ projectCreateView.view = function(ctrl){
       common.banner("New Project Request"),
       m("form", 
         sections.map(function(s, i){
-          return formSection(s.icon, s.content, s.help, i);
+          return common.formSection(s.icon, s.content, s.help, i);
         })
       )
     ])
   )
 }
 
-dashboardView = {}
+dashboardView = {};
 
 dashboardView.controller = function(){
-
+  console.log('hi');
 }
 
 dashboardView.view = function(ctrl){
