@@ -175,7 +175,7 @@ var dataPull = function(){
         var p = {
           date: new Date(d.DATE_REQD),
           id: i+1,
-          level: 0,
+          progress: 10,
           isRejected: false,
           disaster: {
             name: d["TYPE OF DISASTER"],
@@ -216,6 +216,26 @@ var recon = {};
 var navMenu = {};
 var common = {};
 
+recon.approvalSteps = {
+  5: "request", // user makes request
+  10: "sorting", // system receives request from requesting party. assign to appropriate validating agency.
+  20: "validation", // validating agency checks to see if request is valid. i.e. did shit really happen?
+  30: "assessment", // go see what should be done
+  40: "recommendation", // this is what should be done
+  50: "approval", // okay, do it.
+  60: "allocation" // here's the money you're allowed to spend to do it.
+}
+
+recon.approvalPermissions = {
+  "LGU": [5],
+  "GOCC": [5],
+  "NGA": [5], // clarify with stella
+  "NDRRMC": [10, 40],
+  "DPWH": [20, 30],
+  "DBM": [40, 60],
+  "OP": [50]
+}
+
 var user = {
   // model
   LGU: function(name, address){
@@ -227,59 +247,6 @@ var user = {
     this.department = department;
   }
 }
-
-// var user = {
-//   // model
-
-//   list: [],
-//   User: function(data){
-//     var self = this;
-//     for(prop in data){
-//       this[prop] = m.prop(data[prop]);
-//     }
-//     // this.list = [];
-//     this.address = m.prop({
-//       district: null,
-//       department: null,
-//       region: 8,
-//       province: 'Western Samar',
-//       city: null,
-//       town: 'Daram',
-//       barangay: null,
-//       sitio: null
-//     });
-//     this.genUsers = function(){
-//       return m.request({
-//         method: "GET", 
-//         url: "http://api.randomuser.me/?results=5"
-//       }).then(function(data){
-//         return data.results.map(function(r, index){
-//           r.user.level = index;
-//           self.list.push(new user.User(r.user));
-//         });
-//       });
-//     };
-//   },
-
-//   // controller
-//   controller: function(){
-//     var self = this;
-//     this.current = new user.User();
-//     this.getName = function(user){
-//       if(typeof(user.name) == "undefined"){
-//         return "Guest";
-//       } else {
-//         return user.name().first + " " + user.name().last;
-//       }
-//     };
-//     this.logIn = function(user){
-//       this.current = user;
-//     };
-//     this.logOut = function(){
-//       this.current = new user.User();
-//     };
-//   }
-// };
 
 var project = {
   list: [],
