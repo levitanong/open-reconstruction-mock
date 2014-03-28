@@ -188,7 +188,7 @@ var dataPull = function(){
           type: d["PURPOSE1"],
           description: d["PURPOSE"],
           amount: parseInt(d["AMT_REQD"]) || 0,
-          location: {},
+          location: address,
           remarks: d["REMARKS"],
           history: [],
           attachments: []
@@ -520,6 +520,7 @@ projectDetailView.controller = function(){
 projectDetailView.view = function(ctrl){
   return common.main(ctrl,
     m("div#view", [
+      console.log(ctrl.project().location()),
       m("div.row", [
         m("div.columns.medium-12", [
           m("h4", ctrl.project().date()),
