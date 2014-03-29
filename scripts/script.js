@@ -148,9 +148,10 @@ var dataPull = function(){
     url: "data/CF14-RQST-Sanitized.csv",
     deserialize: function(data){
       return csv2json.csv.parse(data, function(d, i){
+        console.log(d);
 
         var author = {};
-        var errors = 0;
+        var errors = [];
 
         var location = {
           sitio: d.SITIO,
@@ -176,10 +177,13 @@ var dataPull = function(){
         }
 
         if(_.isEmpty(location)){
-          errors++;
+          errors.push("Empty Location")
         }
         if(!d["AMT_REQD"]){
-          errors++;
+          errors.push("No Amount");
+        }
+        if(d["NO OF PROJECTS"] > 1){
+          errors.push("Multiple Projects");
         }
         
         var p = {
@@ -503,8 +507,8 @@ projectListView.view = function(ctrl){
                     m("td", project.id()),
                     m("td", [
                       m("a", {href: "/projects/"+project.id(), config: m.route}, project.description()),
-                      (function(){if(project.errors()){
-                        return m("span.label.alert", project.errors()+" errors");
+                      (function(){if(project.errors().length){
+                        return m("span.label.alert", project.errors().length+" errors");
                       }})()
                     ]),
                     m("td.text-right", helper.commaize(project.amount()))
@@ -592,6 +596,12 @@ projectDetailView.view = function(ctrl){
               .value();
           }
         })()
+      ]),
+      m("div.row", [
+        m("h4", "Errors"),
+        ctrl.project().errors().map(function(e){
+          return m("span.label.alert", e);
+        })
       ]),
       m("hr"),
       m("div.row", [
