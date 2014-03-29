@@ -486,7 +486,6 @@ projectListView.view = function(ctrl){
                 m("tr", [
                   m("th", "id"),
                   m("th", "name"),
-                  m("th", "errors"),
                   m("th.text-right", "amount")
                 ])
               ]),
@@ -503,9 +502,11 @@ projectListView.view = function(ctrl){
                   return m("tr", [
                     m("td", project.id()),
                     m("td", [
-                      m("a", {href: "/projects/"+project.id(), config: m.route}, project.description())
+                      m("a", {href: "/projects/"+project.id(), config: m.route}, project.description()),
+                      (function(){if(project.errors()){
+                        return m("span.label.alert", project.errors()+" errors");
+                      }})()
                     ]),
-                    m("td", project.errors()),
                     m("td.text-right", helper.commaize(project.amount()))
                   ])
                 })

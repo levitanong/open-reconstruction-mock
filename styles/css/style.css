@@ -3507,3 +3507,6 @@ form section {
 
 #map {
   height: 384px; }
+
+.label {
+  margin-left: 10px; }
