@@ -178,13 +178,16 @@ var dataPull = function(){
         }
 
         if(_.isEmpty(location)){
-          errors.push("Empty Location")
+          errors.push("Unspecified Location")
         }
         if(!d["AMT_REQD"]){
           errors.push("No Amount");
         }
         if(d["NO OF PROJECTS"] > 1){
           errors.push("Multiple Projects");
+        }
+        if(!d["TYPE OF DISASTER"]){
+          errors.push("Unspecified Disaster");
         }
         
         var p = {
@@ -562,6 +565,28 @@ projectDetailView.view = function(ctrl){
   return common.main(ctrl,
     m("div#view", [
       console.log(ctrl.project().location()),
+      m("div.row", [
+        m("div.columns.medium-12", [
+          m("div.prog", [
+            _.chain(process.steps())
+              .map(function(step, code, list){
+                var progress = ctrl.project().progress();
+                var code = parseInt(code);
+                var width = 100 / _.keys(list).length + "%";
+
+                if(progress > code){
+                  return m("div.step.completed", {style: {width: width}}, step.completed);
+                } else if (progress === code){
+                  return m("div.step.pending", {style: {width: width}}, step.pending);
+                } else {
+                  return m("div.step", {style: {width: width}}, step.label);
+                }
+              })
+              .value()
+          ])
+        ]),
+        console.log(process.steps()[ctrl.project().progress()].pending)
+      ]),
       m("div.row", [
         m("div.columns.medium-12", [
           m("h4", "Posted by "+ctrl.project().author().name+" on "+ctrl.project().date().toDateString()),

@@ -3513,3 +3513,73 @@ form section {
 
 .name {
   margin-right: 10px; }
+
+.prog {
+  *zoom: 1;
+  width: 100%;
+  background-color: #eeeeee;
+  color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 20px 0px;
+  line-height: 30px;
+  text-transform: uppercase;
+  font-size: 12px; }
+  .prog:before, .prog:after {
+    content: " ";
+    display: table; }
+  .prog:after {
+    clear: both; }
+  .prog .step {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    float: left;
+    padding: 20px;
+    font-weight: 300; }
+  .prog .completed {
+    background-color: #39cccc;
+    color: #2ba7a7; }
+    .prog .completed .label {
+      font-weight: normal;
+      font-family: "Roboto Condensed", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+      text-align: center;
+      text-decoration: none;
+      line-height: 1;
+      white-space: nowrap;
+      display: inline-block;
+      position: relative;
+      margin-bottom: inherit;
+      padding: 0.25rem 0.5rem 0.375rem;
+      font-size: 0.6875rem;
+      background-color: #30bbbb;
+      color: white; }
+    .prog .completed .number {
+      border: 3px solid white; }
+  .prog .pending {
+    background-color: #30bbbb;
+    color: white;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px; }
+    .prog .pending .label {
+      font-weight: normal;
+      font-family: "Roboto Condensed", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+      text-align: center;
+      text-decoration: none;
+      line-height: 1;
+      white-space: nowrap;
+      display: inline-block;
+      position: relative;
+      margin-bottom: inherit;
+      padding: 0.25rem 0.5rem 0.375rem;
+      font-size: 0.6875rem;
+      background-color: #2ba7a7;
+      color: white; }
+    .prog .pending .number {
+      border: 3px solid white; }
+  .prog .number {
+    display: inline-block;
+    border-radius: 50%;
+    width: 36px;
+    text-align: center;
+    border: 3px solid #aaaaaa; }

@@ -55,3 +55,43 @@ form
 
 .name
   margin-right: 10px
+
+.prog
+  +clearfix
+  width: 100%
+  background-color: #eee
+  color: rgba(black, 0.1)
+  border-radius: 3px
+  overflow: hidden
+  margin: 20px 0px
+  line-height: 30px
+  text-transform: uppercase
+  font-size: 12px
+  .step
+    +box-sizing(border-box)
+    // width: 25%
+    float: left
+    padding: 20px
+    font-weight: 300
+  .completed
+    background-color: $teal
+    color: darken($teal, 10%)
+    .label
+      +label($bg: darken($teal, 5%))
+    .number
+      border: 3px solid $white
+  .pending
+    background-color: darken($teal, 5%)
+    color: $white
+    +border-right-radius(3px)
+    .label
+      +label($bg: darken($teal, 10%))
+    .number
+      border: 3px solid $white
+  .number
+    display: inline-block
+    border-radius: 50%
+    width: 36px
+    text-align: center
+    border: 3px solid $gray
+
