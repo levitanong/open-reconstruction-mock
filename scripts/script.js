@@ -159,7 +159,8 @@ var dataPull = function(){
           province: d.PROVINCE,
           barangay: d.BARANGAY,
           city: d.CITY,
-          region: "REGION "+d.REG
+          region: "REGION "+d.REG,
+          "class": d.CLASS
         };
 
         switch(d.CODE){
@@ -563,60 +564,61 @@ projectDetailView.view = function(ctrl){
       console.log(ctrl.project().location()),
       m("div.row", [
         m("div.columns.medium-12", [
-          m("h4", ctrl.project().date()),
+          m("h4", "Posted by "+ctrl.project().author().name+" on "+ctrl.project().date().toDateString()),
           m("h1", ctrl.project().description()),
         ])
       ]),
       m("div.row", [
-        m("div.columns.medium-3", [
+        m("div.columns.medium-4", [
           m("h4", "Amount"),
           common.renderString(
             helper.commaize(ctrl.project().amount())
           )
         ]),
-        m("div.columns.medium-3", [
-          m("h4", "Author"),
-          ctrl.project().author().name
-        ]),
-        m("div.columns.medium-3", [
+        m("div.columns.medium-4", [
           m("h4", "Type"),
           ctrl.project().type()
         ]),
-        m("div.columns.medium-3", [
+        m("div.columns.medium-4", [
           m("h4", "Disaster"),
           ctrl.project().disaster().name
         ])
       ]),
       m("div.row", [
-        (function(){
-          if(_.isEmpty(ctrl.project().location())){
-            return m("p", "Missing Data")
-          } else {
-            return _.chain(ctrl.project().location())
-              .pairs()
-              .filter(function(entry){
-                return entry[1];
-              })
-              // .tap(function(thing){
-              //   console.log(thing);
-              // })
-              .map(function(entry){
-                return m("div", [m("h5", entry[0]), m("p", entry[1])]);
-              })
-              .value();
-          }
-        })()
+        m("div.columns.medium-12", [
+          (function(){
+            if(_.isEmpty(ctrl.project().location())){
+              return m("p", "Missing Data")
+            } else {
+              return _.chain(ctrl.project().location())
+                .pairs()
+                .filter(function(entry){
+                  return entry[1];
+                })
+                // .tap(function(thing){
+                //   console.log(thing);
+                // })
+                .map(function(entry){
+                  return m("div", [m("h5", entry[0]), m("p", entry[1])]);
+                })
+                .value();
+            }
+          })()
+        ])
       ]),
       (function(){
         if(ctrl.project().errors().length){
           return m("div.row", [
-            m("h4", "Errors"),
-            ctrl.project().errors().map(function(e){
-              return m("span.label.alert", e);
-            })
+            m("div.columns.medium-12", [
+              m("h4", "Errors"),
+              ctrl.project().errors().map(function(e){
+                return m("span.label.alert", e);
+              })
+            ])
           ])
         }
       })(),
+
       m("hr"),
       m("div.row", [
         m("div.columns.medium-9", [
