@@ -3509,4 +3509,7 @@ form section {
   height: 384px; }
 
 .label {
-  margin-left: 10px; }
+  margin-right: 10px; }
+
+.name {
+  margin-right: 10px; }

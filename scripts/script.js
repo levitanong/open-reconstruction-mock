@@ -159,7 +159,7 @@ var dataPull = function(){
           province: d.PROVINCE,
           barangay: d.BARANGAY,
           city: d.CITY,
-          region: d.REG
+          region: "REGION "+d.REG
         };
 
         switch(d.CODE){
@@ -444,6 +444,14 @@ common.tabs = function(arr){
   ])
 }
 
+common.renderString = function(str){
+  if(str){
+    return m("span", str);
+  } else {
+    return m("span.label.alert", "Missing Data");
+  }
+}
+
 projectListView = {};
 
 projectListView.controller = function(){
@@ -506,10 +514,12 @@ projectListView.view = function(ctrl){
                   return m("tr", [
                     m("td", project.id()),
                     m("td", [
-                      m("a", {href: "/projects/"+project.id(), config: m.route}, project.description()),
-                      (function(){if(project.errors().length){
-                        return m("span.label.alert", project.errors().length+" errors");
-                      }})()
+                      m("a.name", {href: "/projects/"+project.id(), config: m.route}, project.description()),
+                      (function(){
+                        if(project.errors().length){
+                          return m("span.label.alert", project.errors().length+" errors");
+                        }
+                      })()
                     ]),
                     m("td.text-right", helper.commaize(project.amount()))
                   ])
@@ -560,7 +570,9 @@ projectDetailView.view = function(ctrl){
       m("div.row", [
         m("div.columns.medium-3", [
           m("h4", "Amount"),
-          helper.commaize(ctrl.project().amount())
+          common.renderString(
+            helper.commaize(ctrl.project().amount())
+          )
         ]),
         m("div.columns.medium-3", [
           m("h4", "Author"),
