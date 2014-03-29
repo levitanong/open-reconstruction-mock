@@ -588,20 +588,18 @@ projectDetailView.view = function(ctrl){
         ])
       ]),
       m("div.row", [
-        "hi", 
         (function(){
           if(_.isEmpty(ctrl.project().location())){
             return m("p", "Missing Data")
           } else {
-            var lol;
             return _.chain(ctrl.project().location())
               .pairs()
               .filter(function(entry){
                 return entry[1];
               })
-              .tap(function(thing){
-                console.log(thing);
-              })
+              // .tap(function(thing){
+              //   console.log(thing);
+              // })
               .map(function(entry){
                 return m("div", [m("h5", entry[0]), m("p", entry[1])]);
               })
@@ -609,12 +607,16 @@ projectDetailView.view = function(ctrl){
           }
         })()
       ]),
-      m("div.row", [
-        m("h4", "Errors"),
-        ctrl.project().errors().map(function(e){
-          return m("span.label.alert", e);
-        })
-      ]),
+      (function(){
+        if(ctrl.project().errors().length){
+          return m("div.row", [
+            m("h4", "Errors"),
+            ctrl.project().errors().map(function(e){
+              return m("span.label.alert", e);
+            })
+          ])
+        }
+      })(),
       m("hr"),
       m("div.row", [
         m("div.columns.medium-9", [
