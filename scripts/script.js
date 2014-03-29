@@ -92,6 +92,7 @@ var helper = {
     return out;
   },
   commaize: function(number){
+    if(!number){return "";}
 
     var process = function(acc, arr){
       if (acc.length < 1){
@@ -148,9 +149,10 @@ var dataPull = function(){
     deserialize: function(data){
       return csv2json.csv.parse(data, function(d, i){
 
-        var author = {}
+        var author = {};
+        var errors = 0;
 
-        var address = {
+        var location = {
           sitio: d.SITIO,
           town: d.TOWN,
           province: d.PROVINCE,
@@ -161,18 +163,27 @@ var dataPull = function(){
 
         switch(d.CODE){
           case "LGU":
-            author = new user.LGU(d["REQUESTING PARTY"], address)
+            author = new user.LGU(d["REQUESTING PARTY"], location)
             break;
           case "NGA":
             author = new user.NGA(d["REQUESTING PARTY"], d.DEPT)
             break;
         }
 
+        // add user to database while checking for uniqueness
         if(!database.userList().filter(function(u){return u.name === author.name}).length){
           database.userList(database.userList().concat(author));
         }
+
+        if(_.isEmpty(location)){
+          errors++;
+        }
+        if(!d["AMT_REQD"]){
+          errors++;
+        }
         
         var p = {
+          errors: errors,
           date: new Date(d.DATE_REQD),
           id: i+1,
           progress: 10,
@@ -187,8 +198,8 @@ var dataPull = function(){
           implementingAgency: d["RECEIPIENT"],
           type: d["PURPOSE1"],
           description: d["PURPOSE"],
-          amount: parseInt(d["AMT_REQD"]) || 0,
-          location: address,
+          amount: parseInt(d["AMT_REQD"]),
+          location: location,
           remarks: d["REMARKS"],
           history: [],
           attachments: []
@@ -475,6 +486,7 @@ projectListView.view = function(ctrl){
                 m("tr", [
                   m("th", "id"),
                   m("th", "name"),
+                  m("th", "errors"),
                   m("th.text-right", "amount")
                 ])
               ]),
@@ -493,6 +505,7 @@ projectListView.view = function(ctrl){
                     m("td", [
                       m("a", {href: "/projects/"+project.id(), config: m.route}, project.description())
                     ]),
+                    m("td", project.errors()),
                     m("td.text-right", helper.commaize(project.amount()))
                   ])
                 })
@@ -556,6 +569,28 @@ projectDetailView.view = function(ctrl){
           m("h4", "Disaster"),
           ctrl.project().disaster().name
         ])
+      ]),
+      m("div.row", [
+        "hi", 
+        (function(){
+          if(_.isEmpty(ctrl.project().location())){
+            return m("p", "Missing Data")
+          } else {
+            var lol;
+            return _.chain(ctrl.project().location())
+              .pairs()
+              .filter(function(entry){
+                return entry[1];
+              })
+              .tap(function(thing){
+                console.log(thing);
+              })
+              .map(function(entry){
+                return m("div", [m("h5", entry[0]), m("p", entry[1])]);
+              })
+              .value();
+          }
+        })()
       ]),
       m("hr"),
       m("div.row", [
