@@ -112,29 +112,34 @@ var helper = {
   }
 }
 
-var sample = {
-  'disaster names': ['Brunhilda', 'Bantay', 'Muning', 'Dodong', 'Puring'],
-  'disaster': ['Earthquake', 'Flood', 'Typhoon', 'Landslide', 'Anthropogenic'],
-  'projectType': ['Infrastructure', 'Agriculture', 'School Building', 'Health Facilities', 'Shelter Units', 'Environment', 'Other'],
-  'description': [
-    'Adamantium reinforcement for nipa huts.',
-    'These equipments, you know. I need them.',
-    'Very very urgent, we ran out of soft drinks! Help!',
-    'We want to hire Michael Jackson to dance for residents of disaster-afflicted areas',
-    'Request for funding to dispatch search and rescue team for missing local domesticated feline',
-    'Our bridge is missing, can you help us buy another one?'
-  ],
-  'comment': [
-    'Please attach two photocopies of Form R311-78a.9v8 (1983)',
-    'This is a wonderful idea, we should double their budget and give them cake.',
-    'Can I promise to do this if they vote for me?'
-  ],
-  'revision': [null, 0.85, 0.70, 0.65, 0.50, 0.35, 0.2],
-  'region': ["Region 1", "Region 2", "Region 3", "Region 4", "Region 5", "Region 6", "Region 7", "Region 8", "Region 9", "Region 10", "Region 11", "Region 12", "Region 13", 'ARMM', 'NCR', 'CAR']
-};
+// var sample = {
+//   'disaster names': ['Brunhilda', 'Bantay', 'Muning', 'Dodong', 'Puring'],
+//   'disaster': ['Earthquake', 'Flood', 'Typhoon', 'Landslide', 'Anthropogenic'],
+//   'projectType': ['Infrastructure', 'Agriculture', 'School Building', 'Health Facilities', 'Shelter Units', 'Environment', 'Other'],
+//   'description': [
+//     'Adamantium reinforcement for nipa huts.',
+//     'These equipments, you know. I need them.',
+//     'Very very urgent, we ran out of soft drinks! Help!',
+//     'We want to hire Michael Jackson to dance for residents of disaster-afflicted areas',
+//     'Request for funding to dispatch search and rescue team for missing local domesticated feline',
+//     'Our bridge is missing, can you help us buy another one?'
+//   ],
+//   'comment': [
+//     'Please attach two photocopies of Form R311-78a.9v8 (1983)',
+//     'This is a wonderful idea, we should double their budget and give them cake.',
+//     'Can I promise to do this if they vote for me?'
+//   ],
+//   'revision': [null, 0.85, 0.70, 0.65, 0.50, 0.35, 0.2],
+//   'region': ["Region 1", "Region 2", "Region 3", "Region 4", "Region 5", "Region 6", "Region 7", "Region 8", "Region 9", "Region 10", "Region 11", "Region 12", "Region 13", 'ARMM', 'NCR', 'CAR']
+// };
 
 ////////////////////////////////////////////////////
 // fake database
+
+var dictio = {};
+dictio.disasters = m.prop({
+  "T": "Typhoon"
+});
 
 var database = {
   projectList: m.prop([]),
@@ -151,9 +156,12 @@ var dataPull = function(){
         console.log(d);
 
         var author = {};
+        var location = {};
+        var disaster = {};
         var errors = [];
 
-        var location = {
+        // parse location
+        location = {
           sitio: d.SITIO,
           town: d.TOWN,
           province: d.PROVINCE,
@@ -163,6 +171,7 @@ var dataPull = function(){
           "class": d.CLASS
         };
 
+        // parse author
         switch(d.CODE){
           case "LGU":
             author = new user.LGU(d["REQUESTING PARTY"], location)
@@ -170,6 +179,16 @@ var dataPull = function(){
           case "NGA":
             author = new user.NGA(d["REQUESTING PARTY"], d.DEPT)
             break;
+        }
+
+        // parse disaster
+        var disasterStringArray = d["TYPE OF DISASTER"].split(" ");
+        disaster = {
+          disasterStringArray: d["TYPE OF DISASTER"].split(" "),
+          name: disasterStringArray[1],
+          type: dictio.disasters()[disasterStringArray[0]],
+          date: new Date(_.rest(disasterStringArray, 3).reduce(function(a, b){return a + ", " + b}, "")),
+          cause: null
         }
 
         // add user to database while checking for uniqueness
@@ -196,18 +215,13 @@ var dataPull = function(){
           id: i+1,
           progress: 10,
           isRejected: false,
-          disaster: {
-            name: d["TYPE OF DISASTER"],
-            type: "",
-            date: "",
-            cause: null
-          },
+          disaster: disaster,
           author: author,
+          location: location,
           implementingAgency: d["RECEIPIENT"],
           type: d["PURPOSE1"],
           description: d["PURPOSE"],
           amount: parseInt(d["AMT_REQD"]),
-          location: location,
           remarks: d["REMARKS"],
           history: [],
           attachments: []
@@ -606,7 +620,7 @@ projectDetailView.view = function(ctrl){
         ]),
         m("div.columns.medium-4", [
           m("h4", "Disaster"),
-          ctrl.project().disaster().name
+          common.renderString(ctrl.project().disaster().name)
         ])
       ]),
       m("div.row", [
