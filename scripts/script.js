@@ -194,7 +194,7 @@ var dataPull = function(){
             if (!a){
               return b
             } else {
-              return a + ", " + b
+              return a + " " + b
             }
           }, ""),
           cause: null
@@ -354,8 +354,9 @@ navMenu.controller = function(){
 
 common.banner = function(text){
   return m("section.banner", [
-    m("div.row", [
-      m("div.columns.medium-12", [
+    m("div", {class:"row"}, [
+      // 
+      m("div", {class: "columns medium-12"}, [
         m("h1", text)
       ])
     ])
@@ -448,7 +449,7 @@ common.main = function(ctrl, template){
     ]),
     m("body", [
       common.navBar(ctrl),
-      template
+      template,
     ])
   ])
 }
@@ -532,7 +533,8 @@ projectListView.view = function(ctrl){
     m("div#view", [
       common.banner("List of Requested Projects"),
       m("section", [
-        m("div.row", [
+        // console.log("you've got to be"),
+        m("div",{class: "row"}, [
           m("div.columns.medium-9", [
             common.tabs(tabs),
             m("table", [
@@ -553,10 +555,11 @@ projectListView.view = function(ctrl){
                   }
                 })
                 .map(function(project){
+                  var url = "/projects/"+project.id();
                   return m("tr", [
                     m("td", project.id()),
                     m("td", [
-                      m("a.name", {href: "/projects/"+project.id(), config: m.route}, project.description()),
+                      m("a.name", {href: url, config: m.route}, project.description()),
                       (function(){
                         if(project.errors().length){
                           return m("span.label.alert", project.errors().length+" errors");
@@ -582,7 +585,8 @@ projectListView.view = function(ctrl){
               })
             ])
           ])
-        ])
+        ]),
+        // console.log("kidding me")
       ])
     ])
   )
@@ -642,24 +646,36 @@ projectDetailView.view = function(ctrl){
         ])
       ]),
       m("div.row", [
-        m("div.columns.medium-4", [
+        m("div.columns.medium-3", [
           m("h4", "Amount"),
           common.renderString(
             helper.commaize(ctrl.project().amount())
           )
         ]),
-        m("div.columns.medium-4", [
+        m("div.columns.medium-3", [
           m("h4", "Type"),
           ctrl.project().type()
         ]),
-        m("div.columns.medium-4", [
+        m("div.columns.medium-3", [
           m("h4", "Disaster"),
           common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date)
-        ])
-      ]),
-      m("div.row", [
-        m("div.columns.medium-12", [
-          common.renderObj(ctrl.project().location())
+        ]),
+        m("div.columns.medium-3", [
+          m("h4", "Location"),
+          common.renderString(
+            _.chain(ctrl.project().location())
+            .filter(function(entry){
+              return entry
+            })
+            .reduce(function(memo, next){
+              if(!memo){
+                return next;
+              } else {
+                return memo + ", " + next;
+              }
+            }, "")
+            .value()
+          )
         ])
       ]),
       renderErrorList(ctrl.project().errors()),
