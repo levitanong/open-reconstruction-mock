@@ -180,22 +180,22 @@ var dataPull = function(){
             author = new user.NGA(d["REQUESTING PARTY"], d.DEPT)
             break;
         }
+        // add user to database while checking for uniqueness
+        if(!database.userList().filter(function(u){return u.name === author.name}).length){
+          database.userList(database.userList().concat(author));
+        }
 
         // parse disaster
         var disasterStringArray = d["TYPE OF DISASTER"].split(" ");
         disaster = {
-          disasterStringArray: d["TYPE OF DISASTER"].split(" "),
           name: disasterStringArray[1],
           type: dictio.disasters()[disasterStringArray[0]],
           date: new Date(_.rest(disasterStringArray, 3).reduce(function(a, b){return a + ", " + b}, "")),
           cause: null
         }
 
-        // add user to database while checking for uniqueness
-        if(!database.userList().filter(function(u){return u.name === author.name}).length){
-          database.userList(database.userList().concat(author));
-        }
 
+        // error tracking
         if(_.isEmpty(location)){
           errors.push("Unspecified Location")
         }
@@ -207,6 +207,8 @@ var dataPull = function(){
         }
         if(!d["TYPE OF DISASTER"]){
           errors.push("Unspecified Disaster");
+        } else if(!dictio.disasters()[disasterStringArray[0]]){
+          errors.push("Unrecognized Disaster Type");
         }
         
         var p = {
@@ -470,6 +472,22 @@ common.renderString = function(str){
   }
 }
 
+common.renderObj = function(obj){
+  if(_.isEmpty(obj)){
+    return m("span.label.alert", "Missing Date");
+  } else {
+    return _.chain(obj)
+      .pairs()
+      .filter(function(entry){
+        return entry[1];
+      })
+      .map(function(entry){
+        return m("div", [m("h5", entry[0]), m("p", entry[1])]);
+      })
+      .value();
+  }
+}
+
 projectListView = {};
 
 projectListView.controller = function(){
@@ -620,29 +638,12 @@ projectDetailView.view = function(ctrl){
         ]),
         m("div.columns.medium-4", [
           m("h4", "Disaster"),
-          common.renderString(ctrl.project().disaster().name)
+          common.renderObj(ctrl.project().disaster())
         ])
       ]),
       m("div.row", [
         m("div.columns.medium-12", [
-          (function(){
-            if(_.isEmpty(ctrl.project().location())){
-              return m("p", "Missing Data")
-            } else {
-              return _.chain(ctrl.project().location())
-                .pairs()
-                .filter(function(entry){
-                  return entry[1];
-                })
-                // .tap(function(thing){
-                //   console.log(thing);
-                // })
-                .map(function(entry){
-                  return m("div", [m("h5", entry[0]), m("p", entry[1])]);
-                })
-                .value();
-            }
-          })()
+          common.renderObj(ctrl.project().location())
         ])
       ]),
       (function(){
