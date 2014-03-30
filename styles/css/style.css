@@ -3469,6 +3469,9 @@ th.hide-for-touch {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
+body.detail {
+  background-color: #eeeeee; }
+
 .portrait {
   border-radius: 50%; }
   .portrait.sml {
@@ -3583,3 +3586,10 @@ form section {
     width: 36px;
     text-align: center;
     border: 3px solid #aaaaaa; }
+
+section.main {
+  background-color: white;
+  padding-bottom: 20px; }
+
+section.history {
+  padding-top: 20px; }

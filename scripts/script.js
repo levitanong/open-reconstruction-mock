@@ -438,7 +438,11 @@ common.navBar = function(ctrl){
   return nav();
 }
 
-common.main = function(ctrl, template){
+common.main = function(ctrl, template, attrObj){
+  var attrs = {class: ""};
+  if(attrObj){
+    attrs = attrObj;
+  }
   return m("html", [
     m("head", [
       m("link[href='styles/css/style.css'][rel='stylesheet'][type='text/css']"),
@@ -447,7 +451,7 @@ common.main = function(ctrl, template){
       m("link[href='bower_components/leaflet/leaflet.css'][rel='stylesheet'][type='text/css']"),
       m("link[href='bower_components/leaflet-draw/leaflet.draw.css'][rel='stylesheet'][type='text/css']")
     ]),
-    m("body", [
+    m("body", attrs, [
       common.navBar(ctrl),
       template,
     ])
@@ -615,7 +619,7 @@ projectDetailView.view = function(ctrl){
   }
   return common.main(ctrl,
     m("div#view", [
-      m("div.section", [
+      m("section.main", [
         m("div.row", [
           m("div.columns.medium-12", [
             m("div.prog", [
@@ -681,8 +685,7 @@ projectDetailView.view = function(ctrl){
           ]),
         ])
       ]),
-      m("hr"),
-      m("div.section.history", [
+      m("section.history", [
         m("div.row", [
           m("div.columns.medium-9", [
             "conversations"
@@ -692,7 +695,8 @@ projectDetailView.view = function(ctrl){
           ])
         ])
       ])
-    ])
+    ]),
+    {class: "detail"}
   )
 }
 
