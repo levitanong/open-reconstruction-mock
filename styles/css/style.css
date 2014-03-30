@@ -3524,7 +3524,7 @@ form section {
   color: rgba(0, 0, 0, 0.1);
   border-radius: 3px;
   overflow: hidden;
-  margin: 20px 0px;
+  margin-bottom: 20px;
   line-height: 30px;
   text-transform: uppercase;
   font-size: 12px; }
@@ -3538,8 +3538,9 @@ form section {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     float: left;
-    padding: 20px;
-    font-weight: 300; }
+    padding: 0px 10px;
+    font-weight: bold;
+    text-align: center; }
   .prog .completed {
     background-color: #39cccc;
     color: #2ba7a7; }
@@ -3560,7 +3561,7 @@ form section {
     .prog .completed .number {
       border: 3px solid white; }
   .prog .pending {
-    background-color: #30bbbb;
+    background-color: #39cccc;
     color: white;
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px; }
@@ -3589,7 +3590,8 @@ form section {
 
 section.summary {
   background-color: white;
-  padding-bottom: 20px; }
+  padding-bottom: 40px;
+  padding-top: 40px; }
 
 section.history {
   padding-top: 20px; }
