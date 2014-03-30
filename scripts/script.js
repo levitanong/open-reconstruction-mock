@@ -169,13 +169,13 @@ var dataPull = function(){
         disaster = {
           name: disasterStringArray[1],
           type: dictio.disasters()[disasterStringArray[0]],
-          date: _.rest(disasterStringArray, 3).reduce(function(a, b){
+          date: new Date(_.rest(disasterStringArray, 3).reduce(function(a, b){
             if (!a){
               return b
             } else {
               return a + " " + b
             }
-          }, ""),
+          }, "")),
           cause: null
         }
 
@@ -481,10 +481,11 @@ common.renderObj = function(obj){
 common.historyEvent = function(data){
   return m(".event", [
     m(".date", [
-
+      data.date
     ]),
     m(".details", [
-      
+      m("p", data.type),
+      m("p", data.name)
     ])
   ])
 }
@@ -529,7 +530,7 @@ projectListView.view = function(ctrl){
       m("section", [
         // console.log("you've got to be"),
         m("div",{class: "row"}, [
-          m("div.columns.medium-9", [
+          m("div", {class: "columns.medium-9"}, [
             common.tabs(tabs),
             m("table", [
               m("thead", [
@@ -609,7 +610,7 @@ projectDetailView.view = function(ctrl){
   }
   return common.main(ctrl,
     m("div#view", [
-      m("section.main", [
+      m("section.summary", [
         m("div.row", [
           m("div.columns.medium-12", [
             m("div.prog", [
@@ -654,7 +655,7 @@ projectDetailView.view = function(ctrl){
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Disaster")]),
-            common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date)
+            common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date.toDateString())
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Location")]),
@@ -678,7 +679,8 @@ projectDetailView.view = function(ctrl){
       m("section.history", [
         m("div.row", [
           m("div.columns.medium-9", [
-            "conversations"
+            "conversations",
+            common.historyEvent(ctrl.project().disaster())
           ]),
           m("div.columns.medium-3", [
             "attachment list"
