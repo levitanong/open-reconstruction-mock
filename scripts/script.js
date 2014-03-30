@@ -542,6 +542,7 @@ projectListView.view = function(ctrl){
                 m("tr", [
                   m("th", "id"),
                   m("th", "name"),
+                  m("th", "data integrity"),
                   m("th.text-right", "amount")
                 ])
               ]),
@@ -559,12 +560,10 @@ projectListView.view = function(ctrl){
                   return m("tr", [
                     m("td", project.id()),
                     m("td", [
-                      m("a.name", {href: url, config: m.route}, project.description()),
-                      (function(){
-                        if(project.errors().length){
-                          return m("span.label.alert", project.errors().length+" errors");
-                        }
-                      })()
+                      m("a.name", {href: url, config: m.route}, project.description())
+                    ]),
+                    m("td", [
+                      project.errors().length ? m("span.label.alert", project.errors().length+" errors") : m("span.label.success", [m("i.fa.fa-check")])
                     ]),
                     m("td.text-right", helper.commaize(project.amount()))
                   ])
