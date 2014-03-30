@@ -635,7 +635,9 @@ projectDetailView.view = function(ctrl){
         m("div.row", [
           m("div.columns.medium-12", [
             m("h4", [
-              "Posted by "+ctrl.project().author().name+" on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
+              m("small", [
+                "Posted by "+ctrl.project().author().name+" on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
+              ]),
               renderErrorList(ctrl.project().errors())
             ]),
             m("h1", ctrl.project().description()),
