@@ -190,7 +190,13 @@ var dataPull = function(){
         disaster = {
           name: disasterStringArray[1],
           type: dictio.disasters()[disasterStringArray[0]],
-          date: new Date(_.rest(disasterStringArray, 3).reduce(function(a, b){return a + ", " + b}, "")),
+          date: _.rest(disasterStringArray, 3).reduce(function(a, b){
+            if (!a){
+              return b
+            } else {
+              return a + ", " + b
+            }
+          }, ""),
           cause: null
         }
 
