@@ -153,7 +153,7 @@ var dataPull = function(){
     url: "data/CF14-RQST-Sanitized.csv",
     deserialize: function(data){
       return csv2json.csv.parse(data, function(d, i){
-        console.log(d);
+        // console.log(d);
 
         var author = {};
         var location = {};
@@ -600,9 +600,20 @@ projectDetailView.controller = function(){
 }
 
 projectDetailView.view = function(ctrl){
+  var renderErrorList = function(errList){
+    if(errList.length){
+      return m("div.row", [
+        m("div.columns.medium-12", [
+          m("h4", "Errors"),
+          errList.map(function(e){
+            return m("span.label.alert", e);
+          })
+        ])
+      ])
+    }
+  }
   return common.main(ctrl,
     m("div#view", [
-      console.log(ctrl.project().location()),
       m("div.row", [
         m("div.columns.medium-12", [
           m("div.prog", [
@@ -623,7 +634,6 @@ projectDetailView.view = function(ctrl){
               .value()
           ])
         ]),
-        console.log(process.steps()[ctrl.project().progress()].pending)
       ]),
       m("div.row", [
         m("div.columns.medium-12", [
@@ -644,7 +654,7 @@ projectDetailView.view = function(ctrl){
         ]),
         m("div.columns.medium-4", [
           m("h4", "Disaster"),
-          common.renderObj(ctrl.project().disaster())
+          common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date)
         ])
       ]),
       m("div.row", [
@@ -652,19 +662,7 @@ projectDetailView.view = function(ctrl){
           common.renderObj(ctrl.project().location())
         ])
       ]),
-      (function(){
-        if(ctrl.project().errors().length){
-          return m("div.row", [
-            m("div.columns.medium-12", [
-              m("h4", "Errors"),
-              ctrl.project().errors().map(function(e){
-                return m("span.label.alert", e);
-              })
-            ])
-          ])
-        }
-      })(),
-
+      renderErrorList(ctrl.project().errors()),
       m("hr"),
       m("div.row", [
         m("div.columns.medium-9", [
