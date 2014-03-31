@@ -3593,33 +3593,47 @@ section.summary {
   padding-bottom: 40px;
   padding-top: 40px; }
 
-section.history {
-  padding-top: 20px; }
-
 .value {
   font-weight: bold; }
 
 .event {
-  *zoom: 1; }
+  *zoom: 1;
+  padding: 10px 0px;
+  position: relative; }
   .event:before, .event:after {
     content: " ";
     display: table; }
   .event:after {
     clear: both; }
+  .event:first-child {
+    padding-top: 40px; }
   .event .date {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+    position: relative;
+    z-index: 1;
     height: 72px;
     width: 72px;
     border-radius: 50%;
     background-color: white;
     text-align: center;
     float: left;
-    padding-top: 4px; }
+    padding-top: 6px; }
     .event .date .day {
       margin: 0px; }
     .event .date .month, .event .date .year {
       font-size: 12px; }
+  .event .dateGroup .divider {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 38px;
+    border-right: 4px solid white; }
   .event .details {
     margin-left: 90px; }
+
+.timestamp {
+  color: #aaaaaa; }

@@ -226,16 +226,16 @@ var dataPull = function(){
         // parse disaster
         var disasterStringArray = d["TYPE OF DISASTER"].split(" ");
         disaster = {
-          name: disasterStringArray[1],
-          type: dictio.disasters()[disasterStringArray[0]],
-          date: new Date(_.rest(disasterStringArray, 3).reduce(function(a, b){
+          name: m.prop(disasterStringArray[1]),
+          type: m.prop(dictio.disasters()[disasterStringArray[0]]),
+          date: m.prop(new Date(_.rest(disasterStringArray, 3).reduce(function(a, b){
             if (!a){
               return b
             } else {
               return a + " " + b
             }
-          }, "")),
-          cause: null
+          }, ""))),
+          cause: m.prop(null)
         }
 
 
@@ -269,7 +269,13 @@ var dataPull = function(){
           description: d["PURPOSE"],
           amount: parseInt(d["AMT_REQD"]),
           remarks: d["REMARKS"],
-          history: [],
+          history: [new historyEvent.Event({
+            editor: author,
+            type: "POST",
+            title: "Posted this request", 
+            description: d["PURPOSE"],
+            timestamp: new Date(d.DATE_REQD)
+          })],
           attachments: []
         }
         return new project.Project(p);
@@ -292,7 +298,6 @@ var dataPull = function(){
 // namespace
 
 var recon = {};
-var navMenu = {};
 var common = {};
 
 var process = {};
@@ -370,20 +375,6 @@ var project = {
     //   return project.Project.list;
     // }
   }
-}
-
-////////////////////////////////////////////////////
-// Controller
-
-navMenu.controller = function(){
-  var self = this;
-  self.Users = new user.controller();
-  // self.Projects = new project.controller();
-
-  // self.Users.genUsers()
-  // .then(function(){
-  //   self.Projects.genProjects(50);
-  // });
 }
 
 ////////////////////////////////////////////////////
@@ -537,21 +528,47 @@ common.renderObj = function(obj){
   }
 }
 
-common.historyEvent = function(data){
-  var dateCircle = function(date){
-    return m(".date", [
-      m("div.month", helper.monthArray[data.date.getMonth()]),
-      m("h4.day", data.date.getDate()),
-      m("div.year", data.date.getFullYear())
-    ])
-  }
+var historyEvent = {}
+historyEvent.date = function(date){
+  return m(".dateGroup", [
+    m(".date", [
+      m("div.month", helper.monthArray[date.getMonth()]),
+      m("h4.day", date.getDate()),
+      m("div.year", date.getFullYear())
+    ]),
+    m(".divider")
+  ])
+}
+historyEvent.calamity = function(data){
   return m(".event", [
-    dateCircle(data.date),
+    historyEvent.date(data.date()),
     m(".details", [
-      m("h3", data.type + " " + data.name),
-      m("p", helper.timeago(data.date))
+      m("h3", data.type() + " " + data.name()),
+      m("p.timestamp", helper.timeago(data.date()))
     ]),
   ])
+}
+historyEvent.project = function(data){
+  var pastTense = function(type){
+    switch(type){
+      case "POST":
+        return "posted";
+        break;
+    }
+  }
+  return m(".event", [
+    historyEvent.date(data.timestamp()),
+    m(".details", [
+      m("h3", data.title()),
+      m("p", data.description()),
+      m("p.timestamp", pastTense(data.type()) + " by " + data.editor().name + " " + helper.timeago(data.timestamp()))
+    ])
+  ])
+}
+historyEvent.Event = function(data){
+  for(prop in data){
+    this[prop] = m.prop(data[prop]);
+  }
 }
 
 projectListView = {};
@@ -643,8 +660,7 @@ projectListView.view = function(ctrl){
               })
             ])
           ])
-        ]),
-        // console.log("kidding me")
+        ])
       ])
     ])
   )
@@ -743,7 +759,7 @@ projectDetailView.view = function(ctrl){
           m("div.columns.medium-3", [
             m("h4", [m("small", "Disaster")]),
             m("h4.value", [
-              common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date.toDateString())  
+              common.renderString(ctrl.project().disaster().type() + " " + ctrl.project().disaster().name() + ", in " + ctrl.project().disaster().date().toDateString())  
             ])
           ]),
           m("div.columns.medium-3", [
@@ -770,8 +786,10 @@ projectDetailView.view = function(ctrl){
       m("section.history", [
         m("div.row", [
           m("div.columns.medium-9", [
-            "conversations",
-            common.historyEvent(ctrl.project().disaster())
+            historyEvent.calamity(ctrl.project().disaster()),
+            ctrl.project().history().map(function(entry){
+              return historyEvent.project(entry);
+            })
           ]),
           m("div.columns.medium-3", [
             "attachment list"

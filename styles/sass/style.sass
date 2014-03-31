@@ -103,27 +103,45 @@ section.summary
   padding-top: 40px
 
 section.history
-  padding-top: 20px
+  // padding-top: 20px
 
 .value
   font-weight: bold
 
 .event
   +clearfix
+  padding: 10px 0px
+  position: relative
+  &:first-child
+    padding-top: 40px
   .date
     +box-sizing(border-box)
+    position: relative
+    z-index: 1
     height: 72px
     width: 72px
     border-radius: 50%
     background-color: white
     text-align: center
     float: left
-    padding-top: 4px
+    padding-top: 6px
     .day
       margin: 0px
     .month, .year
       font-size: 12px
+  .dateGroup
+    .divider
+      position: absolute
+      z-index: 0
+      top: 0
+      bottom: 0
+      left: 0
+      width: 36px + 2px
+      border-right: 4px solid white
 
   .details
     margin-left: 90px
+
+.timestamp
+  color: $gray
 
