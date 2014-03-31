@@ -869,14 +869,108 @@ projectCreateView.view = function(ctrl){
 dashboardView = {};
 
 dashboardView.controller = function(){
-  console.log('hi');
+  var self = this;
+  this.projects = m.prop({});
+  dataPull().then(function(data){
+    self.projects(database.projectList());
+  })
+
+  this.totalProjects = function(){
+    return this.projects().length
+  }
+
+  this.totalProjectCost = function(){
+    return helper.truncate(
+      _.chain(this.projects())
+      .map(function(project){
+        return project.amount();
+      })
+      .compact()
+      .reduce(function(a, b){
+        return a + b;
+      }, 0)
+      .value()
+    );
+  }
+
+  this.mostCommonProjectType = function(){
+    return _.chain(this.projects())
+    .countBy(function(r){
+      return r.type();
+    })
+    .pairs()
+    .reject(function(p){
+      return p[0] == "OTHERS";
+    })
+    // .tap(function(a){
+    //   console.log(a);
+    // })
+    .max(function(r){
+      return r[1];
+    })
+    .value();
+  }
 }
 
 dashboardView.view = function(ctrl){
   return common.main(ctrl,
-    common.banner("Dashboard"),
     m("div#view", [
-      
+      common.banner("Dashboard"),
+      m("section", [
+        m(".row", [
+          m(".columns.medium-6", [
+            m("h1", [m("small", "Project Status")]),
+            m(".row", [
+              m(".columns.medium-6", [
+                m("h1", ctrl.totalProjects()),
+                m("p", "Total number of projects")
+              ]),
+              m(".columns.medium-6", [
+                m("h1", ctrl.totalProjects()),
+                m("p", "Pending projects")
+              ])
+            ]),
+            m(".row", [
+              m(".columns.medium-6", [
+                m("h1", "0"),
+                m("p", "Approved projects")
+              ]),
+              m(".columns.medium-6", [
+                m("h1", "0%"),
+                m("p", "Percent of approved projects")
+              ])
+            ])
+          ])
+        ]),
+        m("hr"),
+        m(".row", [
+          m(".columns.medium-12", [
+            m("h1", [m("small", "Project Costs")])
+          ]),
+          m(".columns.medium-3", [
+            m("h1", ctrl.totalProjectCost()),
+            m("p", "Total cost of all projects")
+          ]),
+          m(".columns.medium-3", [
+            m("h1", ctrl.totalProjectCost()),
+            m("p", "Cost of pending projects")
+          ]),
+          m(".columns.medium-3.end", [
+            m("h1", "0"),
+            m("p", "Amount approved")
+          ]),
+        ]),
+        m("hr"),
+        m(".row", [
+          m(".columns.medium-12", [
+            m("h1", [m("small", "Trends")])
+          ]),
+          m(".columns.medium-3.end", [
+            m("h1", ctrl.mostCommonProjectType()[0]),
+            m("p", "Most common project type")
+          ])
+        ])
+      ])
     ])
   )
 }
