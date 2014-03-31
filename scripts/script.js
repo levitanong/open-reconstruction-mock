@@ -1092,6 +1092,7 @@ dashboardView.view = function(ctrl){
         m(".row", [
           m(".columns.medium-12", [
             m("h1", [m("small", "History")]),
+            m("h4.text-center", "The number of requests per month plotted against amount"),
             m("canvas#chart", {config: ctrl.chartInit, width: 970, height: 300}),
             m("div.legend", [
               m("p", [
