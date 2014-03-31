@@ -3633,7 +3633,8 @@ section.summary {
     width: 38px;
     border-right: 4px solid white; }
   .event .details {
-    margin-left: 90px; }
+    margin-left: 90px;
+    border-bottom: 1px dashed #aaaaaa; }
 
 .timestamp {
   color: #aaaaaa; }

@@ -792,7 +792,7 @@ projectDetailView.view = function(ctrl){
             })
           ]),
           m("div.columns.medium-3", [
-            "attachment list"
+
           ])
         ])
       ])
