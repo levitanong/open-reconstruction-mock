@@ -1002,9 +1002,9 @@ dashboardView.controller = function(){
       labels: labels,
       datasets: [
         {
-          fillColor : "orange",
-          strokeColor : "orange",
-          pointColor : "orange",
+          fillColor : "#FF851B",
+          strokeColor : "#FF851B",
+          pointColor : "#FF851B",
           pointStrokeColor : "white",
           data: apmValues
         },
@@ -1051,8 +1051,9 @@ dashboardView.view = function(ctrl){
             m("h1", "0%"),
             m("p", "Percent of approved projects")
           ])
-        ]),
-        m("hr"),
+        ])
+      ]),
+      m("section.alt", [
         m(".row", [
           m(".columns.medium-12", [
             m("h1", [m("small", "Project Costs")])
@@ -1069,8 +1070,9 @@ dashboardView.view = function(ctrl){
             m("h1", "0"),
             m("p", "Amount approved")
           ]),
-        ]),
-        m("hr"),
+        ])
+      ]),
+      m("section", [
         m(".row", [
           m(".columns.medium-12", [
             m("h1", [m("small", "Trends")])
@@ -1087,8 +1089,9 @@ dashboardView.view = function(ctrl){
             m("h1", "You"),
             m("p", "Most awesome person")
           ])
-        ]),
-        m("hr"),
+        ])
+      ]),
+      m("section.alt", [
         m(".row", [
           m(".columns.medium-12", [
             m("h1", [m("small", "History")]),
