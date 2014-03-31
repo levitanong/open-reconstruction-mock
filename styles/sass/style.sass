@@ -48,8 +48,8 @@ form
     &.alt
       background-color: #f4f4f4
 
-#map
-  height: 384px
+#map, #detailMap
+  height: 256px
 
 .label
   margin-right: 10px
@@ -64,7 +64,7 @@ form
   color: rgba(black, 0.1)
   border-radius: 3px
   overflow: hidden
-  margin: 20px 0px
+  margin-bottom: 20px
   line-height: 30px
   text-transform: uppercase
   font-size: 12px
@@ -72,8 +72,9 @@ form
     +box-sizing(border-box)
     // width: 25%
     float: left
-    padding: 20px
-    font-weight: 300
+    padding: 0px 10px
+    font-weight: bold
+    text-align: center
   .completed
     background-color: $teal
     color: darken($teal, 10%)
@@ -82,7 +83,7 @@ form
     .number
       border: 3px solid $white
   .pending
-    background-color: darken($teal, 5%)
+    background-color: $teal
     color: $white
     +border-right-radius(3px)
     .label
@@ -96,10 +97,52 @@ form
     text-align: center
     border: 3px solid $gray
 
-section.main
+section.summary
   background-color: white
-  padding-bottom: 20px
+  padding-bottom: 40px
+  padding-top: 40px
 
 section.history
-  padding-top: 20px
+  // padding-top: 20px
+
+.value
+  font-weight: bold
+
+.event
+  +clearfix
+  padding: 10px 0px
+  position: relative
+  &:first-child
+    padding-top: 40px
+  .date
+    +box-sizing(border-box)
+    position: relative
+    z-index: 1
+    height: 72px
+    width: 72px
+    border-radius: 50%
+    background-color: white
+    text-align: center
+    float: left
+    padding-top: 6px
+    .day
+      margin: 0px
+    .month, .year
+      font-size: 12px
+  .dateGroup
+    .divider
+      position: absolute
+      z-index: 0
+      top: 0
+      bottom: 0
+      left: 0
+      width: 36px + 2px
+      border-right: 4px solid white
+
+  .details
+    margin-left: 90px
+    border-bottom: 1px dashed $gray
+
+.timestamp
+  color: $gray
 

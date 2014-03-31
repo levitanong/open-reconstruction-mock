@@ -109,7 +109,66 @@ var helper = {
         return acc + "," + head;
       }
     }, "");
-  }
+  },
+  timeago: function (time, local, raw) {
+    //time: the time
+    //local: compared to what time? default: now
+    //raw: wheter you want in a format of "5 minutes ago", or "5 minutes"
+    if (!time) return "never";
+
+    if (!local) {
+      local = new Date(Date.now());
+    }
+
+    // assume that time is of type Date
+    time = time.getTime();
+    // if (angular.isDate(time)) {
+    //   time = time.getTime();
+    // } else if (typeof time === "string") {
+    //   time = new Date(time).getTime();
+    // }
+
+    // assume that local is of type Date
+    local = local.getTime();
+    // if (angular.isDate(local)) {
+    //   local = local.getTime();
+    // }else if (typeof local === "string") {
+    //   local = new Date(local).getTime();
+    // }
+
+    if (typeof time !== 'number' || typeof local !== 'number') {
+      return;
+    }
+
+    var
+      offset = Math.abs((local - time) / 1000),
+      span = [],
+      MINUTE = 60,
+      HOUR = 3600,
+      DAY = 86400,
+      WEEK = 604800,
+      MONTH = 2629744,
+      YEAR = 31556926,
+      DECADE = 315569260;
+
+    if (offset <= MINUTE)              span = [ '', raw ? 'now' : 'less than a minute' ];
+    else if (offset < (MINUTE * 60))   span = [ Math.round(Math.abs(offset / MINUTE)), 'min' ];
+    else if (offset < (HOUR * 24))     span = [ Math.round(Math.abs(offset / HOUR)), 'hr' ];
+    else if (offset < (DAY * 7))       span = [ Math.round(Math.abs(offset / DAY)), 'day' ];
+    else if (offset < (WEEK * 52))     span = [ Math.round(Math.abs(offset / WEEK)), 'week' ];
+    else if (offset < (YEAR * 10))     span = [ Math.round(Math.abs(offset / YEAR)), 'year' ];
+    else if (offset < (DECADE * 100))  span = [ Math.round(Math.abs(offset / DECADE)), 'decade' ];
+    else                               span = [ '', 'a long time' ];
+
+    span[1] += (span[0] === 0 || span[0] > 1) ? 's' : '';
+    span = span.join(' ');
+
+    if (raw === true) {
+      return span;
+    }
+    return (time <= local) ? span + ' ago' : 'in ' + span;
+  },
+  monthArray: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
 }
 
 ////////////////////////////////////////////////////
@@ -167,16 +226,16 @@ var dataPull = function(){
         // parse disaster
         var disasterStringArray = d["TYPE OF DISASTER"].split(" ");
         disaster = {
-          name: disasterStringArray[1],
-          type: dictio.disasters()[disasterStringArray[0]],
-          date: _.rest(disasterStringArray, 3).reduce(function(a, b){
+          name: m.prop(disasterStringArray[1]),
+          type: m.prop(dictio.disasters()[disasterStringArray[0]]),
+          date: m.prop(new Date(_.rest(disasterStringArray, 3).reduce(function(a, b){
             if (!a){
               return b
             } else {
               return a + " " + b
             }
-          }, ""),
-          cause: null
+          }, ""))),
+          cause: m.prop(null)
         }
 
 
@@ -210,7 +269,13 @@ var dataPull = function(){
           description: d["PURPOSE"],
           amount: parseInt(d["AMT_REQD"]),
           remarks: d["REMARKS"],
-          history: [],
+          history: [new historyEvent.Event({
+            editor: author,
+            type: "POST",
+            title: "Posted this request", 
+            description: d["PURPOSE"],
+            timestamp: new Date(d.DATE_REQD)
+          })],
           attachments: []
         }
         return new project.Project(p);
@@ -233,7 +298,6 @@ var dataPull = function(){
 // namespace
 
 var recon = {};
-var navMenu = {};
 var common = {};
 
 var process = {};
@@ -311,20 +375,6 @@ var project = {
     //   return project.Project.list;
     // }
   }
-}
-
-////////////////////////////////////////////////////
-// Controller
-
-navMenu.controller = function(){
-  var self = this;
-  self.Users = new user.controller();
-  // self.Projects = new project.controller();
-
-  // self.Users.genUsers()
-  // .then(function(){
-  //   self.Projects.genProjects(50);
-  // });
 }
 
 ////////////////////////////////////////////////////
@@ -478,15 +528,47 @@ common.renderObj = function(obj){
   }
 }
 
-common.historyEvent = function(data){
-  return m(".event", [
+var historyEvent = {}
+historyEvent.date = function(date){
+  return m(".dateGroup", [
     m(".date", [
-
+      m("div.month", helper.monthArray[date.getMonth()]),
+      m("h4.day", date.getDate()),
+      m("div.year", date.getFullYear())
     ]),
+    m(".divider")
+  ])
+}
+historyEvent.calamity = function(data){
+  return m(".event", [
+    historyEvent.date(data.date()),
     m(".details", [
-      
+      m("h3", data.type() + " " + data.name()),
+      m("p.timestamp", helper.timeago(data.date()))
+    ]),
+  ])
+}
+historyEvent.project = function(data){
+  var pastTense = function(type){
+    switch(type){
+      case "POST":
+        return "posted";
+        break;
+    }
+  }
+  return m(".event", [
+    historyEvent.date(data.timestamp()),
+    m(".details", [
+      m("h3", data.title()),
+      m("p", data.description()),
+      m("p.timestamp", pastTense(data.type()) + " by " + data.editor().name + " " + helper.timeago(data.timestamp()))
     ])
   ])
+}
+historyEvent.Event = function(data){
+  for(prop in data){
+    this[prop] = m.prop(data[prop]);
+  }
 }
 
 projectListView = {};
@@ -529,7 +611,7 @@ projectListView.view = function(ctrl){
       m("section", [
         // console.log("you've got to be"),
         m("div",{class: "row"}, [
-          m("div.columns.medium-9", [
+          m("div", {class: "columns medium-9"}, [
             common.tabs(tabs),
             m("table", [
               m("thead", [
@@ -565,7 +647,7 @@ projectListView.view = function(ctrl){
               ])
             ])
           ]),
-          m("div.columns.medium-3", [
+          m("div", {class: "columns medium-3"}, [
             m("a.button", {href: "/new", config: m.route}, "New Request"),
             m("ul", [
               m("li", [
@@ -578,8 +660,7 @@ projectListView.view = function(ctrl){
               })
             ])
           ])
-        ]),
-        // console.log("kidding me")
+        ])
       ])
     ])
   )
@@ -594,6 +675,21 @@ projectDetailView.controller = function(){
   dataPull().then(function(data){
     self.project(database.projectList()[self.id - 1]);
   })
+
+  this.initMap = function(elem){
+    var map = L.map(elem).setView([51.505, -0.09], 13);
+
+    // create the tile layer with correct attribution
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
+
+    // start the map in South-East England
+    map.setView(new L.LatLng(51.3, 0.7),9);
+    map.addLayer(osm);
+
+    L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
+  }
 }
 
 projectDetailView.view = function(ctrl){
@@ -607,9 +703,11 @@ projectDetailView.view = function(ctrl){
       ])
     }
   }
+
   return common.main(ctrl,
     m("div#view", [
-      m("section.main", [
+      m("div#detailMap", {config: ctrl.initMap}),
+      m("section.summary", [
         m("div.row", [
           m("div.columns.medium-12", [
             m("div.prog", [
@@ -634,7 +732,9 @@ projectDetailView.view = function(ctrl){
         m("div.row", [
           m("div.columns.medium-12", [
             m("h4", [
-              "Posted by "+ctrl.project().author().name+" on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
+              m("small", [
+                "Posted by "+ctrl.project().author().name+" on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
+              ]),
               renderErrorList(ctrl.project().errors())
             ]),
             m("h1", ctrl.project().description()),
@@ -644,44 +744,55 @@ projectDetailView.view = function(ctrl){
         m("div.row", [
           m("div.columns.medium-3", [
             m("h4", [m("small", "Amount")]),
-            common.renderString(
-              helper.commaize(ctrl.project().amount())
-            )
+            m("h4.value", [
+              common.renderString(
+                helper.commaize(ctrl.project().amount())
+              )
+            ])
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Type")]),
-            ctrl.project().type()
+            m("h4.value", [
+              ctrl.project().type()
+            ])
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Disaster")]),
-            common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date)
+            m("h4.value", [
+              common.renderString(ctrl.project().disaster().type() + " " + ctrl.project().disaster().name() + ", in " + ctrl.project().disaster().date().toDateString())  
+            ])
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Location")]),
-            common.renderString(
-              _.chain(ctrl.project().location())
-              .filter(function(entry){
-                return entry
-              })
-              .reduce(function(memo, next){
-                if(!memo){
-                  return next;
-                } else {
-                  return memo + ", " + next;
-                }
-              }, "")
-              .value()
-            )
-          ]),
+            m("h4.value", [
+              common.renderString(
+                _.chain(ctrl.project().location())
+                .filter(function(entry){
+                  return entry
+                })
+                .reduce(function(memo, next){
+                  if(!memo){
+                    return next;
+                  } else {
+                    return memo + ", " + next;
+                  }
+                }, "")
+                .value()
+              )
+            ])
+          ])
         ])
       ]),
       m("section.history", [
         m("div.row", [
           m("div.columns.medium-9", [
-            "conversations"
+            historyEvent.calamity(ctrl.project().disaster()),
+            ctrl.project().history().map(function(entry){
+              return historyEvent.project(entry);
+            })
           ]),
           m("div.columns.medium-3", [
-            "attachment list"
+
           ])
         ])
       ])
@@ -693,7 +804,20 @@ projectDetailView.view = function(ctrl){
 projectCreateView = {};
 
 projectCreateView.controller = function(){
+  this.initMap = function(elem){
+    var map = L.map(elem, {drawControl: true}).setView([51.505, -0.09], 13);
 
+    // create the tile layer with correct attribution
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
+
+    // start the map in South-East England
+    map.setView(new L.LatLng(51.3, 0.7),9);
+    map.addLayer(osm);
+
+    L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
+  }
 }
 
 projectCreateView.view = function(ctrl){
@@ -714,7 +838,7 @@ projectCreateView.view = function(ctrl){
       icon: "fa-map-marker",
       content: [
         m("h2", "Location"),
-        m("#map")
+        m("div", {id: "map", config: ctrl.initMap})
       ],
       help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
     },
@@ -729,22 +853,6 @@ projectCreateView.view = function(ctrl){
       help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
     }
   ]
-
-  if(document.getElementById("map")){
-    var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
-
-
-    // create the tile layer with correct attribution
-    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
-
-    // start the map in South-East England
-    map.setView(new L.LatLng(51.3, 0.7),9);
-    map.addLayer(osm);
-
-    L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
-  }
 
   return common.main(ctrl,
     m("div#view", [
