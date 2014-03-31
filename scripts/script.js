@@ -183,6 +183,7 @@ var database = {
   projectList: m.prop([]),
   userList: m.prop([]),
   projectFilters: m.prop([]),
+  projectDisasters: m.prop([])
 }
 
 var dataPull = function(){
@@ -290,7 +291,17 @@ var dataPull = function(){
       .unique()
       .compact()
       .value();
+
+    var pDisasters = _.chain(database.projectList())
+      .map(function(p){
+        return p.disaster().type();
+      })
+      .unique()
+      .compact()
+      .value();
+
     database.projectFilters(pFilters);
+    database.projectDisasters(pDisasters);
   });
 }
 
@@ -902,9 +913,21 @@ dashboardView.controller = function(){
     .reject(function(p){
       return p[0] == "OTHERS";
     })
-    // .tap(function(a){
-    //   console.log(a);
-    // })
+    .max(function(r){
+      return r[1];
+    })
+    .value();
+  }
+
+  this.mostCommonDisasterType = function(){
+    return _.chain(this.projects())
+    .countBy(function(r){
+      return r.disaster().type();
+    })
+    .pairs()
+    .reject(function(p){
+      return p[0] == "OTHERS";
+    })
     .max(function(r){
       return r[1];
     })
@@ -965,9 +988,17 @@ dashboardView.view = function(ctrl){
           m(".columns.medium-12", [
             m("h1", [m("small", "Trends")])
           ]),
-          m(".columns.medium-3.end", [
+          m(".columns.medium-3", [
             m("h1", ctrl.mostCommonProjectType()[0]),
             m("p", "Most common project type")
+          ]),
+          m(".columns.medium-3", [
+            m("h1", ctrl.mostCommonDisasterType()[0]),
+            m("p", "Most common disaster type")
+          ]),
+          m(".columns.medium-3.end", [
+            m("h1", "You"),
+            m("p", "Most awesome person")
           ])
         ])
       ])
