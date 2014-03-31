@@ -941,28 +941,24 @@ dashboardView.view = function(ctrl){
       common.banner("Dashboard"),
       m("section", [
         m(".row", [
-          m(".columns.medium-6", [
+          m(".columns.medium-12", [
             m("h1", [m("small", "Project Status")]),
-            m(".row", [
-              m(".columns.medium-6", [
-                m("h1", ctrl.totalProjects()),
-                m("p", "Total number of projects")
-              ]),
-              m(".columns.medium-6", [
-                m("h1", ctrl.totalProjects()),
-                m("p", "Pending projects")
-              ])
-            ]),
-            m(".row", [
-              m(".columns.medium-6", [
-                m("h1", "0"),
-                m("p", "Approved projects")
-              ]),
-              m(".columns.medium-6", [
-                m("h1", "0%"),
-                m("p", "Percent of approved projects")
-              ])
-            ])
+          ]),
+          m(".columns.medium-3", [
+            m("h1", ctrl.totalProjects()),
+            m("p", "Total number of projects")
+          ]),
+          m(".columns.medium-3", [
+            m("h1", ctrl.totalProjects()),
+            m("p", "Pending projects")
+          ]),
+          m(".columns.medium-3", [
+            m("h1", "0"),
+            m("p", "Approved projects")
+          ]),
+          m(".columns.medium-3", [
+            m("h1", "0%"),
+            m("p", "Percent of approved projects")
           ])
         ]),
         m("hr"),
