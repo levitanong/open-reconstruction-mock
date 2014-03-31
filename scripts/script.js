@@ -933,6 +933,61 @@ dashboardView.controller = function(){
     })
     .value();
   }
+
+  this.chartInit = function(elem){
+    var labels = [];
+    var rawCount = _.chain(self.projects())
+      .countBy(function(entry){
+        return helper.monthArray[entry.date().getMonth()] + ", " + entry.date().getFullYear();
+      });
+
+    var first = new Date(rawCount.keys().head().value());
+    var last = new Date(rawCount.keys().last().value());
+    var dateRangeObj = _.chain(first.getFullYear())
+      .range(last.getFullYear() + 1)
+      .map(function(year, index, list){
+        if(index === 0){
+          return _.range(first.getMonth(), 12).map(function(month){
+            return helper.monthArray[month] + ", " + year;
+          });
+        } else if (index === list.length - 1){
+          return _.range(0, last.getMonth() + 1).map(function(month){
+            return helper.monthArray[month] + ", " + year;
+          });
+        } else {
+          return _.range(0, 12).map(function(month){
+            return helper.monthArray[month] + ", " + year;
+          });
+        }
+      })
+      .flatten()
+      .map(function(dateYear){
+        return [dateYear, rawCount.value()[dateYear] ? rawCount.value()[dateYear] : 0];
+      })
+      .object();
+
+    var values = dateRangeObj.values().value();
+    var labels = dateRangeObj.keys().value();
+
+    var data = {
+      labels: labels,
+      datasets: [
+        {
+          fillColor : "black",
+          strokeColor : "black",
+          pointColor : "black",
+          pointStrokeColor : "white",
+          data: values
+        }
+      ]
+    }
+
+    var ctx = elem.getContext("2d");
+    var myNewChart = new Chart(ctx).Line(data, {
+      bezierCurve: false
+    });
+    // console.log(lol);
+  }
 }
 
 dashboardView.view = function(ctrl){
@@ -995,6 +1050,13 @@ dashboardView.view = function(ctrl){
           m(".columns.medium-3.end", [
             m("h1", "You"),
             m("p", "Most awesome person")
+          ])
+        ]),
+        m("hr"),
+        m(".row", [
+          m(".columns.medium-12", [
+            m("h1", [m("small", "History")]),
+            m("canvas#chart", {config: ctrl.chartInit, width: 970, height: 300})
           ])
         ])
       ])

@@ -3641,3 +3641,6 @@ section.summary {
 
 h1 small {
   color: #ff851b; }
+
+#chart {
+  width: 970px; }
