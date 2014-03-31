@@ -3508,8 +3508,8 @@ form section {
   form section.alt {
     background-color: #f4f4f4; }
 
-#map {
-  height: 384px; }
+#map, #detailMap {
+  height: 256px; }
 
 .label {
   margin-right: 10px; }
@@ -3595,3 +3595,6 @@ section.summary {
 
 section.history {
   padding-top: 20px; }
+
+.value {
+  font-weight: bold; }

@@ -530,7 +530,7 @@ projectListView.view = function(ctrl){
       m("section", [
         // console.log("you've got to be"),
         m("div",{class: "row"}, [
-          m("div", {class: "columns.medium-9"}, [
+          m("div", {class: "columns medium-9"}, [
             common.tabs(tabs),
             m("table", [
               m("thead", [
@@ -566,7 +566,7 @@ projectListView.view = function(ctrl){
               ])
             ])
           ]),
-          m("div.columns.medium-3", [
+          m("div", {class: "columns medium-3"}, [
             m("a.button", {href: "/new", config: m.route}, "New Request"),
             m("ul", [
               m("li", [
@@ -595,6 +595,21 @@ projectDetailView.controller = function(){
   dataPull().then(function(data){
     self.project(database.projectList()[self.id - 1]);
   })
+
+  this.initMap = function(elem){
+    var map = L.map(elem).setView([51.505, -0.09], 13);
+
+    // create the tile layer with correct attribution
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
+
+    // start the map in South-East England
+    map.setView(new L.LatLng(51.3, 0.7),9);
+    map.addLayer(osm);
+
+    L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
+  }
 }
 
 projectDetailView.view = function(ctrl){
@@ -608,8 +623,10 @@ projectDetailView.view = function(ctrl){
       ])
     }
   }
+
   return common.main(ctrl,
     m("div#view", [
+      m("div#detailMap", {config: ctrl.initMap}),
       m("section.summary", [
         m("div.row", [
           m("div.columns.medium-12", [
@@ -647,35 +664,43 @@ projectDetailView.view = function(ctrl){
         m("div.row", [
           m("div.columns.medium-3", [
             m("h4", [m("small", "Amount")]),
-            common.renderString(
-              helper.commaize(ctrl.project().amount())
-            )
+            m("h4.value", [
+              common.renderString(
+                helper.commaize(ctrl.project().amount())
+              )
+            ])
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Type")]),
-            ctrl.project().type()
+            m("h4.value", [
+              ctrl.project().type()
+            ])
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Disaster")]),
-            common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date.toDateString())
+            m("h4.value", [
+              common.renderString(ctrl.project().disaster().type + " " + ctrl.project().disaster().name + ", in " + ctrl.project().disaster().date.toDateString())  
+            ])
           ]),
           m("div.columns.medium-3", [
             m("h4", [m("small", "Location")]),
-            common.renderString(
-              _.chain(ctrl.project().location())
-              .filter(function(entry){
-                return entry
-              })
-              .reduce(function(memo, next){
-                if(!memo){
-                  return next;
-                } else {
-                  return memo + ", " + next;
-                }
-              }, "")
-              .value()
-            )
-          ]),
+            m("h4.value", [
+              common.renderString(
+                _.chain(ctrl.project().location())
+                .filter(function(entry){
+                  return entry
+                })
+                .reduce(function(memo, next){
+                  if(!memo){
+                    return next;
+                  } else {
+                    return memo + ", " + next;
+                  }
+                }, "")
+                .value()
+              )
+            ])
+          ])
         ])
       ]),
       m("section.history", [
@@ -697,7 +722,20 @@ projectDetailView.view = function(ctrl){
 projectCreateView = {};
 
 projectCreateView.controller = function(){
+  this.initMap = function(elem){
+    var map = L.map(elem, {drawControl: true}).setView([51.505, -0.09], 13);
 
+    // create the tile layer with correct attribution
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
+
+    // start the map in South-East England
+    map.setView(new L.LatLng(51.3, 0.7),9);
+    map.addLayer(osm);
+
+    L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
+  }
 }
 
 projectCreateView.view = function(ctrl){
@@ -718,7 +756,7 @@ projectCreateView.view = function(ctrl){
       icon: "fa-map-marker",
       content: [
         m("h2", "Location"),
-        m("#map")
+        m("div", {id: "map", config: ctrl.initMap})
       ],
       help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
     },
@@ -733,22 +771,6 @@ projectCreateView.view = function(ctrl){
       help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
     }
   ]
-
-  if(document.getElementById("map")){
-    var map = L.map('map', {drawControl: true}).setView([51.505, -0.09], 13);
-
-
-    // create the tile layer with correct attribution
-    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-    var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
-
-    // start the map in South-East England
-    map.setView(new L.LatLng(51.3, 0.7),9);
-    map.addLayer(osm);
-
-    L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
-  }
 
   return common.main(ctrl,
     m("div#view", [
