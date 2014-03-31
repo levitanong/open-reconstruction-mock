@@ -3642,5 +3642,18 @@ section.summary {
 h1 small {
   color: #ff851b; }
 
-#chart {
-  width: 970px; }
+.legend {
+  margin-left: 36px; }
+
+.swatch {
+  position: relative;
+  display: inline-block;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  margin-right: 10px;
+  bottom: -5px; }
+  .swatch.orange {
+    background-color: #ff851b; }
+  .swatch.black {
+    background-color: rgba(0, 0, 0, 0.3); }
