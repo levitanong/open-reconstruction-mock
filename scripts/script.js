@@ -941,6 +941,11 @@ dashboardView.controller = function(){
         return helper.monthArray[entry.date().getMonth()] + ", " + entry.date().getFullYear();
       });
 
+    var rawGroup = _.chain(self.projects())
+      .groupBy(function(entry){
+        return helper.monthArray[entry.date().getMonth()] + ", " + entry.date().getFullYear();
+      });
+
     var first = new Date(rawCount.keys().head().value());
     var last = new Date(rawCount.keys().last().value());
     var dateRangeObj = _.chain(first.getFullYear())
@@ -960,24 +965,55 @@ dashboardView.controller = function(){
           });
         }
       })
-      .flatten()
+      .flatten();
+
+    var countPerMonth = dateRangeObj
       .map(function(dateYear){
         return [dateYear, rawCount.value()[dateYear] ? rawCount.value()[dateYear] : 0];
       })
       .object();
 
-    var values = dateRangeObj.values().value();
-    var labels = dateRangeObj.keys().value();
+    var amountPerMonth = dateRangeObj
+      .map(function(dateYear){
+        var projects = rawGroup.value()[dateYear]
+        var amount = 0;
+
+        if(projects){
+          amount = _.chain(projects)
+          .map(function(project){
+            return project.amount();
+          })
+          .compact()
+          .reduce(function(acc, next){
+            return acc + next;
+          }, 0)
+          .value();
+        }
+
+        return [dateYear, projects ? amount * 0.00000001 : 0];
+      })
+      .object();
+
+    var cpmValues = countPerMonth.values().value();
+    var apmValues = amountPerMonth.values().value();
+    var labels = dateRangeObj.value();
 
     var data = {
       labels: labels,
       datasets: [
         {
-          fillColor : "black",
-          strokeColor : "black",
-          pointColor : "black",
+          fillColor : "orange",
+          strokeColor : "orange",
+          pointColor : "orange",
           pointStrokeColor : "white",
-          data: values
+          data: apmValues
+        },
+        {
+          fillColor : "rgba(0,0,0,0.3)",
+          strokeColor : "rgba(0,0,0,0.3)",
+          pointColor : "rgba(0,0,0,1)",
+          pointStrokeColor : "white",
+          data: cpmValues
         }
       ]
     }
@@ -1056,7 +1092,17 @@ dashboardView.view = function(ctrl){
         m(".row", [
           m(".columns.medium-12", [
             m("h1", [m("small", "History")]),
-            m("canvas#chart", {config: ctrl.chartInit, width: 970, height: 300})
+            m("canvas#chart", {config: ctrl.chartInit, width: 970, height: 300}),
+            m("div.legend", [
+              m("p", [
+                m("div.swatch.black"),
+                m("span", "Number of requests")
+              ]),
+              m("p", [
+                m("div.swatch.orange"),
+                m("span", "Amount (In 100 millions)")
+              ])
+            ])
           ])
         ])
       ])
