@@ -3505,8 +3505,9 @@ h1 {
 form section {
   padding-top: 20px;
   padding-bottom: 20px; }
-  form section.alt {
-    background-color: #f4f4f4; }
+
+section.alt {
+  background-color: #f4f4f4; }
 
 #map, #detailMap {
   height: 256px; }
