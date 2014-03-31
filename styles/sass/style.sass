@@ -108,3 +108,22 @@ section.history
 .value
   font-weight: bold
 
+.event
+  +clearfix
+  .date
+    +box-sizing(border-box)
+    height: 72px
+    width: 72px
+    border-radius: 50%
+    background-color: white
+    text-align: center
+    float: left
+    padding-top: 4px
+    .day
+      margin: 0px
+    .month, .year
+      font-size: 12px
+
+  .details
+    margin-left: 90px
+

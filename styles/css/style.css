@@ -3598,3 +3598,28 @@ section.history {
 
 .value {
   font-weight: bold; }
+
+.event {
+  *zoom: 1; }
+  .event:before, .event:after {
+    content: " ";
+    display: table; }
+  .event:after {
+    clear: both; }
+  .event .date {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 72px;
+    width: 72px;
+    border-radius: 50%;
+    background-color: white;
+    text-align: center;
+    float: left;
+    padding-top: 4px; }
+    .event .date .day {
+      margin: 0px; }
+    .event .date .month, .event .date .year {
+      font-size: 12px; }
+  .event .details {
+    margin-left: 90px; }
