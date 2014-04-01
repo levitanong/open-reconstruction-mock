@@ -25,10 +25,39 @@ projectCreation.view = function(ctrl){
       content: [
         m("h2", "Project"),
         m("label", [
-          "hi"
+          "Description",
+          m("input", {type: "text", placeholder: "Sea Wall for this town"})
+        ]),
+        m("label", [
+          "Amount",
+          m("input", {type: "number"})
         ])
       ],
       help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
+    },
+    {
+      icon: "fa-paperclip",
+      content: [
+        m("h2", "Attachment"),
+        m("button", {type: "button"}, "Upload"),
+        m("h3", "Endorsements"),
+        m("button", {type: "button"}, "Upload"),
+        m("h3", "Costing Estimates"),
+        m("button", {type: "button"}, "Upload"),
+        m("h3", "Inspection Reports"),
+        m("button", {type: "button"}, "Upload"),
+        m("h3", "Photos/Diagrams"),
+        m("button", {type: "button"}, "Upload"),
+        m("h3", "Other"),
+        m("button", {type: "button"}, "Upload"),
+      ],
+      help: "We need your attachments to help your case. Certificates from engineers, endorsements from politicians, and photographs of the area are extremely helpful."
+    },
+    {
+      content: [
+        m("button", {type: "button"}, "Submit"),
+        m("button", {type: "button", class: "alert"}, "Cancel"),
+      ]
     }
   ]
 
