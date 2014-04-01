@@ -1,0 +1,3 @@
+user.view = function(ctrl){
+
+}

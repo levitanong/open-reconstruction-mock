@@ -1,8 +1,8 @@
-projectDetail.controller = function(){
+project.controller = function(){
   var self = this;
   this.id = m.route.param("id");
   this.project = m.prop({});
-  dataPull().then(function(data){
+  database.pull().then(function(data){
     self.project(database.projectList()[self.id - 1]);
   })
 

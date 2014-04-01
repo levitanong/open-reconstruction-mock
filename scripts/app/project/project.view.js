@@ -1,4 +1,4 @@
-projectDetail.view = function(ctrl){
+project.view = function(ctrl){
   var renderErrorList = function(errList){
     if(errList.length){
       return m("span", [

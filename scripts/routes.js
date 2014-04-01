@@ -4,8 +4,9 @@
 
 m.route(document.body, "/projects", {
     "/projects": projectListing,
-    "/projects/:id": projectDetail,
+    "/projects/:id": project,
     "/new": projectCreation,
-    "/dashboard": dashboard
+    "/dashboard": dashboard,
+    "/user/:id": user
 });
 

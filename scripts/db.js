@@ -10,7 +10,7 @@ var database = {
   projectDisasters: m.prop([])
 }
 
-var dataPull = function(){
+database.pull = function(){
   return m.request({
     method: "GET",
     url: "data/CF14-RQST-Sanitized.csv",

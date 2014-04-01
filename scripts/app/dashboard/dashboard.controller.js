@@ -1,7 +1,7 @@
 dashboard.controller = function(){
   var self = this;
   this.projects = m.prop({});
-  dataPull().then(function(data){
+  database.pull().then(function(data){
     self.projects(database.projectList());
   })
 
