@@ -1,6 +1,6 @@
 projectCreation.controller = function(){
   this.initMap = function(elem){
-    var map = L.map(elem, {drawControl: true}).setView([51.505, -0.09], 13);
+    var map = L.map(elem, {drawControl: true, scrollWheelZoom: false}).setView([51.505, -0.09], 13);
 
     // create the tile layer with correct attribution
     var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
