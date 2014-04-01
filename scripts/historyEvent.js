@@ -32,7 +32,11 @@ historyEvent.project = function(data){
     m(".details", [
       m("h3", data.title()),
       m("p", data.description()),
-      m("p.timestamp", pastTense(data.type()) + " by " + data.editor().name + " " + helper.timeago(data.timestamp()))
+      m("p.timestamp", [
+        pastTense(data.type()) + " by ",
+        m("a", {href: "/user/" + data.editor().slug, config: m.route}, data.editor().name),
+        helper.timeago(data.timestamp())
+      ])
     ])
   ])
 }

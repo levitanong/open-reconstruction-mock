@@ -25,7 +25,12 @@ projectCreation.view = function(ctrl){
       content: [
         m("h2", "Project"),
         m("label", [
-          "hi"
+          "Description",
+          m("input", {type: "text", placeholder: "Sea Wall for this town"})
+        ]),
+        m("label", [
+          "Amount",
+          m("input", {type: "number"})
         ])
       ],
       help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
