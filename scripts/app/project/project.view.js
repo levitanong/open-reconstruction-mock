@@ -123,7 +123,6 @@ project.listView = function(ctrl){
       ctrl.projectList()
       .filter(function(p){
         if(!ctrl.currentFilter.projects()){
-          console.log(p);
           return true;
         } else {
           return p.type() == ctrl.currentFilter.projects();
