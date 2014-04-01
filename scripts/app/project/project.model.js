@@ -5,3 +5,5 @@ project.Project = function(data){
     this[prop] = m.prop(data[prop]);
   }
 }
+
+project.List = Array;

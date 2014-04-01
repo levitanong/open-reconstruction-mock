@@ -39,7 +39,9 @@ project.view = function(ctrl){
           m("div.columns.medium-12", [
             m("h4", [
               m("small", [
-                "Posted by "+ctrl.project().author().name+" on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
+                "Posted by ",
+                m("a",{href: "/user/"+ctrl.project().author().slug, config: m.route}, ctrl.project().author().name),
+                " on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
               ]),
               renderErrorList(ctrl.project().errors())
             ]),
@@ -105,4 +107,41 @@ project.view = function(ctrl){
     ]),
     {class: "detail"}
   )
+}
+
+project.listView = function(ctrl){
+  return m("table", [
+    m("thead", [
+      m("tr", [
+        m("th", "id"),
+        m("th", "name"),
+        m("th", "data integrity"),
+        m("th.text-right", "amount")
+      ])
+    ]),
+    m("tbody", [
+      ctrl.projectList()
+      .filter(function(p){
+        if(!ctrl.currentFilter.projects()){
+          console.log(p);
+          return true;
+        } else {
+          return p.type() == ctrl.currentFilter.projects();
+        }
+      })
+      .map(function(project){
+        var url = "/projects/"+project.id();
+        return m("tr", [
+          m("td", project.id()),
+          m("td", [
+            m("a.name", {href: url, config: m.route}, project.description())
+          ]),
+          m("td", [
+            project.errors().length ? m("span.label.alert", project.errors().length+" errors") : m("span.label.success", [m("i.fa.fa-check")])
+          ]),
+          m("td.text-right", helper.commaize(project.amount()))
+        ])
+      })
+    ])
+  ])
 }
