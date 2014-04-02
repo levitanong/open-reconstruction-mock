@@ -1,5 +1,5 @@
 dashboard.view = function(ctrl){
-  return common.main(ctrl,
+  return app.template(ctrl, [
     m("div#view", [
       common.banner("Dashboard"),
       m("section", [
@@ -83,5 +83,5 @@ dashboard.view = function(ctrl){
         ])
       ])
     ])
-  )
+  ])
 }

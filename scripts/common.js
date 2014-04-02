@@ -86,26 +86,6 @@ common.navBar = function(ctrl){
   return nav();
 }
 
-common.main = function(ctrl, template, attrObj){
-  var attrs = {class: ""};
-  if(attrObj){
-    attrs = attrObj;
-  }
-  return m("html", [
-    m("head", [
-      m("link[href='styles/css/style.css'][rel='stylesheet'][type='text/css']"),
-      m("link[href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700'][rel='stylesheet'][type='text/css']"),
-      m("link[href='bower_components/font-awesome/css/font-awesome.min.css'][rel='stylesheet'][type='text/css']"),
-      m("link[href='bower_components/leaflet/leaflet.css'][rel='stylesheet'][type='text/css']"),
-      m("link[href='bower_components/leaflet-draw/leaflet.draw.css'][rel='stylesheet'][type='text/css']")
-    ]),
-    m("body", attrs, [
-      common.navBar(ctrl),
-      template,
-    ])
-  ])
-}
-
 common.tabs = function(arr){
   return m("dl.tabs[data-tab]", [
     arr.map(function(item, i){
