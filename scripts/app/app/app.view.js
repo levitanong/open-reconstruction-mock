@@ -48,17 +48,15 @@ app.navbar = function(ctrl){
         menuItems.map(menuItem)
       ]),
       m("ul.right", [
-        
-      //   menuItem({label: "Generate Sample Data"}),
         m("li.has-dropdown.not-click", [
           m("a", {href: "#"}, [
-            (function(){
+            helper.selfun(function(){
               if(ctrl.app.isLoggedIn()){
                 return ctrl.app.currentUser().name;
               } else {
                 return "Guest";
               }
-            })()
+            })
           ]),
           m("ul.dropdown", [
             ctrl.app.authorizedUsers().map(function(user){
@@ -67,18 +65,15 @@ app.navbar = function(ctrl){
                   ctrl.app.currentUser(user)
                 }}, user.name)
               ])
+            }),
+            helper.selfun(function(){
+              if(ctrl.app.isLoggedIn()){
+                return m("li", [
+                  m("a", {onclick: ctrl.app.logout.bind(ctrl.app)}, "Logout")
+                ])
+              }
             })
           ])
-      //     m("ul.dropdown", [
-      //       ctrl.Users.list.map(function(user){
-      //         return m("li", [
-      //           m("a",{onclick: ctrl.Users.logIn.bind(ctrl.Users, user)}, "Login as " + ctrl.Users.getName(user))
-      //         ])
-      //       }),
-      //       m("li", [
-      //         m("a", {onclick:ctrl.Users.logOut.bind(ctrl)}, "Logout")
-      //       ])
-      //     ])
         ])
       ])
     ])

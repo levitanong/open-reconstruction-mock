@@ -7,6 +7,9 @@ app.controller = function(){
       return false;
     }
   };
+  this.logout = function(){
+    this.currentUser(null);
+  }
   this.authorizedUsers = function(){
     return database.userList().filter(function(user){
       return user.department === "NDRRMC";
