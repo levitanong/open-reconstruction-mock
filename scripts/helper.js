@@ -168,5 +168,9 @@ var helper = {
     }
     return (time <= local) ? span + ' ago' : 'in ' + span;
   },
-  monthArray: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+  monthArray: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"],
+  selfun: function(exp){
+    return exp();
+  }
 }
+

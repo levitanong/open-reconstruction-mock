@@ -61,14 +61,12 @@ projectCreation.view = function(ctrl){
     }
   ]
 
-  return common.main(ctrl,
-    m("div#view", [
-      common.banner("New Project Request"),
-      m("form", 
-        sections.map(function(s, i){
-          return common.formSection(s.icon, s.content, s.help, i);
-        })
-      )
-    ])
-  )
+  return app.template(ctrl, [
+    common.banner("New Project Request"),
+    m("form", 
+      sections.map(function(s, i){
+        return common.formSection(s.icon, s.content, s.help, i);
+      })
+    )
+  ])
 }

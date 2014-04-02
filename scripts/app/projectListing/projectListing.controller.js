@@ -2,6 +2,7 @@ projectListing.controller = function(){
   var self = this;
   // this.Users = new user.controller();
   // this.Projects = new project.controller();
+  this.app = new app.controller();
   this.projectList = m.prop([]);
   this.projectFilters = m.prop([]);
   this.currentFilter = {

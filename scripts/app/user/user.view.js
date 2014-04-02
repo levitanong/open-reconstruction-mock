@@ -1,5 +1,5 @@
 user.view = function(ctrl){
-  return common.main(ctrl, m("div#view", [
+  return app.template(ctrl, [
     common.banner(ctrl.user().name),
     m("div", {class: "row"}, [
       m("div", {class: "columns medium-9"}, [
@@ -7,5 +7,5 @@ user.view = function(ctrl){
         project.listView(ctrl)
       ])
     ])
-  ]))
+  ])
 }
