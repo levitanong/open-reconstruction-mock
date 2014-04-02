@@ -8,9 +8,6 @@ app.controller = function(){
     }
   };
   this.authorizedUsers = function(){
-    console.log(database.userList().filter(function(user){
-      return user.department;
-    }));
     return database.userList().filter(function(user){
       return user.department === "NDRRMC";
     });

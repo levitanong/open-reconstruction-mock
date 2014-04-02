@@ -54,7 +54,7 @@ app.navbar = function(ctrl){
           m("a", {href: "#"}, [
             (function(){
               if(ctrl.app.isLoggedIn()){
-                return ctrl.currentUser();
+                return ctrl.app.currentUser().name;
               } else {
                 return "Guest";
               }
@@ -63,7 +63,9 @@ app.navbar = function(ctrl){
           m("ul.dropdown", [
             ctrl.app.authorizedUsers().map(function(user){
               return m("li", [
-                m("a", user.name)
+                m("a", {onclick: function(){
+                  ctrl.app.currentUser(user)
+                }}, user.name)
               ])
             })
           ])
