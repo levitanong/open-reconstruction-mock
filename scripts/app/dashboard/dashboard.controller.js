@@ -1,5 +1,6 @@
 dashboard.controller = function(){
   var self = this;
+  this.app = new app.controller();
   this.projects = m.prop({});
   database.pull().then(function(data){
     self.projects(database.projectList());

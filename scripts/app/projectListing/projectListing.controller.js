@@ -3,6 +3,7 @@ projectListing.controller = function(){
   // this.Users = new user.controller();
   // this.Projects = new project.controller();
   this.app = new app.controller();
+  this.tabs = new common.tabs.controller();
   this.projectList = m.prop([]);
   this.projectFilters = m.prop([]);
   this.currentFilter = {

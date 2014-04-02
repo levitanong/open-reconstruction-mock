@@ -8,7 +8,7 @@ projectListing.view = function(ctrl){
     m("section", [
       m("div",{class: "row"}, [
         m("div", {class: "columns medium-9"}, [
-          common.tabs(tabs),
+          common.tabs.view(ctrl.tabs, tabs),
           project.listView(ctrl)
         ]),
         m("div", {class: "columns medium-3"}, [

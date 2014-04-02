@@ -1,6 +1,7 @@
 project.controller = function(){
   var self = this;
   this.app = new app.controller();
+  this.tabs = new common.tabs.controller();
   this.id = m.route.param("id");
   this.project = m.prop({});
   database.pull().then(function(data){

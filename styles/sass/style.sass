@@ -116,6 +116,9 @@ section.history
   position: relative
   &:first-child
     padding-top: 40px
+  &:last-child
+    .details
+      border-bottom: none
   .date
     +box-sizing(border-box)
     position: relative
@@ -166,4 +169,11 @@ h1 small
     background-color: $orange
   &.black
     background-color: rgba(black, 0.3)
+
+.actions
+  background-color: white
+  .action
+    margin-left: 90px
+    padding: 20px 0px
+
 
