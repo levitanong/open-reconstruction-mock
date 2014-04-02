@@ -30,62 +30,6 @@ common.formSection = function(icon, content, help, i){
   ])
 }
 
-common.navBar = function(ctrl){
-  var nav = function(){
-
-    var menuItems = [
-      {label: "Overview", url: "/dashboard"},
-      {label: "Projects", url: "/projects"}
-    ]
-
-    var menuItem = function(data){
-      if(!data.url) data.url = "#";
-      return m("li", [m("a", {href: data.url, config: m.route}, data.label)]);
-    }
-
-    return m("nav.top-bar[data-topbar]", [
-      m("ul.title-area", [
-        m("li.name", [
-          m("h1", [
-            m("a[href='#']", "Open Reconstruction")
-          ])
-        ])
-      ]),
-      m("section.top-bar-section", [
-        m("ul.left", [
-          menuItems.map(menuItem)
-        ]),
-        // m("ul.right", [
-        //   menuItem({label: "Generate Sample Data"}),
-        //   m("li.has-dropdown.not-click", [
-        //     m("a[href='#']", [
-        //       (function(){
-        //         if(ctrl.Users.current.picture){
-        //           return m("img.portrait.sml", {src: ctrl.Users.current.picture()});
-        //         } else {
-        //           return "";
-        //         }
-        //       })(),
-        //       ctrl.Users.getName(ctrl.Users.current)
-        //     ]),
-        //     m("ul.dropdown", [
-        //       ctrl.Users.list.map(function(user){
-        //         return m("li", [
-        //           m("a",{onclick: ctrl.Users.logIn.bind(ctrl.Users, user)}, "Login as " + ctrl.Users.getName(user))
-        //         ])
-        //       }),
-        //       m("li", [
-        //         m("a", {onclick:ctrl.Users.logOut.bind(ctrl)}, "Logout")
-        //       ])
-        //     ])
-        //   ])
-        // ])
-      ])
-    ]);
-  }
-  return nav();
-}
-
 common.tabs = function(arr){
   return m("dl.tabs[data-tab]", [
     arr.map(function(item, i){
@@ -113,7 +57,7 @@ common.renderString = function(str){
 
 common.renderObj = function(obj){
   if(_.isEmpty(obj)){
-    return m("span.label.alert", "Missing Date");
+    return m("span.label.alert", "Missing Data");
   } else {
     return _.chain(obj)
       .pairs()

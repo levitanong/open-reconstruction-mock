@@ -124,6 +124,22 @@ database.pull = function(){
       .compact()
       .value();
 
+    var authorizedUsers = [
+      {name: "Joseph Gordon Levitt", department: "NDRRMC"}
+    ]
+
+    database.userList(
+      _.chain(authorizedUsers)
+      .map(function(u){
+        return new user.NGA(u.name, u.department);
+      })
+      .union(database.userList())
+      .unique(function(u){
+        return u.name;
+      })
+      .value()
+    );
+
     database.projectFilters(pFilters);
     database.projectDisasters(pDisasters);
   });

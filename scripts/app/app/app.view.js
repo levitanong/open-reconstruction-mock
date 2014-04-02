@@ -19,6 +19,66 @@ app.template = function(a, b, c){
       m("link[href='bower_components/leaflet/leaflet.css'][rel='stylesheet'][type='text/css']"),
       m("link[href='bower_components/leaflet-draw/leaflet.draw.css'][rel='stylesheet'][type='text/css']")
     ]),
-    m("body", attrs, [common.navBar(ctrl)].concat(content))
+    m("body", attrs, [app.navbar(ctrl)].concat(content))
   ])
+}
+
+app.navbar = function(ctrl){
+
+  var menuItems = [
+    {label: "Overview", url: "/dashboard"},
+    {label: "Projects", url: "/projects"}
+  ]
+
+  var menuItem = function(data){
+    if(!data.url) data.url = "#";
+    return m("li", [m("a", {href: data.url, config: m.route}, data.label)]);
+  }
+
+  return m("nav.top-bar[data-topbar]", [
+    m("ul.title-area", [
+      m("li.name", [
+        m("h1", [
+          m("a[href='#']", "Open Reconstruction")
+        ])
+      ])
+    ]),
+    m("section.top-bar-section", [
+      m("ul.left", [
+        menuItems.map(menuItem)
+      ]),
+      m("ul.right", [
+        
+      //   menuItem({label: "Generate Sample Data"}),
+        m("li.has-dropdown.not-click", [
+          m("a", {href: "#"}, [
+            (function(){
+              if(ctrl.app.isLoggedIn()){
+                return ctrl.currentUser();
+              } else {
+                return "Guest";
+              }
+            })()
+          ]),
+          m("ul.dropdown", [
+            ctrl.app.authorizedUsers().map(function(user){
+              return m("li", [
+                m("a", user.name)
+              ])
+            })
+          ])
+      //     m("ul.dropdown", [
+      //       ctrl.Users.list.map(function(user){
+      //         return m("li", [
+      //           m("a",{onclick: ctrl.Users.logIn.bind(ctrl.Users, user)}, "Login as " + ctrl.Users.getName(user))
+      //         ])
+      //       }),
+      //       m("li", [
+      //         m("a", {onclick:ctrl.Users.logOut.bind(ctrl)}, "Logout")
+      //       ])
+      //     ])
+        ])
+      ])
+    ])
+  ]);
 }
