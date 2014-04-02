@@ -9,5 +9,10 @@ var user = {
     this.name = name;
     this.department = department;
     this.slug = name.replace(/ /g, "-").replace(/\./g, "").toLowerCase();
+  },
+  GUEST: function(){
+    this.name = "Guest";
+    this.department = "";
+    this.slug = null;
   }
 }

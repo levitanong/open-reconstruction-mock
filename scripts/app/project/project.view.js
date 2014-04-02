@@ -10,6 +10,14 @@ project.view = function(ctrl){
     }
   }
 
+  var userActions = function(ctrl){
+    if(ctrl.isCurrentUserAuthorized()){
+      return m("div", "approve and edit!");
+    } else {
+      return m("div", "comment");
+    }
+  }
+
   return app.template(ctrl, {class: "detail"}, [
     m("div#detailMap", {config: ctrl.initMap}),
     m("section.summary", [
@@ -96,7 +104,8 @@ project.view = function(ctrl){
           historyEvent.calamity(ctrl.project().disaster()),
           ctrl.project().history().map(function(entry){
             return historyEvent.project(entry);
-          })
+          }),
+          userActions(ctrl)
         ]),
         m("div.columns.medium-3", [
 
