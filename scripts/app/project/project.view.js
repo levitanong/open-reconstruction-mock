@@ -10,6 +10,45 @@ project.view = function(ctrl){
     }
   }
 
+  var whichAction = function(ctrl, arr){
+
+  }
+
+  var userActions = function(ctrl){
+
+    var actions = m.prop({
+      "Comment": [
+        m("h3", "Leave a comment"),
+        m("textarea"),
+        m("button", "Submit")
+      ],
+      "Approve": [
+        m("h3", "Approve"),
+        m("div", "insert amount revision"),
+        m("div", "insert remarks"),
+        m("button", "Approve")
+      ],
+      "Reject": [
+        m("h3", "Reject"),
+        m("div", "insert remakrs"),
+        m("button", "Reject")
+      ]
+    })
+
+    if(ctrl.isCurrentUserAuthorized()){
+      return m("div", [
+        common.tabs.view(ctrl.tabs, [
+          {label: "Comment"},
+          {label: "Approve"},
+          {label: "Reject"}
+        ]),
+        m("form", actions()[ctrl.tabs.currentTab() ? ctrl.tabs.currentTab() : "Comment"])
+      ])
+    } else {
+      return m("div", actions()["Comment"])
+    }
+  }
+
   return app.template(ctrl, {class: "detail"}, [
     m("div#detailMap", {config: ctrl.initMap}),
     m("section.summary", [
@@ -102,7 +141,16 @@ project.view = function(ctrl){
 
         ])
       ])
-    ]) 
+    ]), 
+    m("section.actions", [
+      m("div.row", [
+        m("div.columns.medium-9", [
+          m(".action", [
+            userActions(ctrl)
+          ])
+        ])
+      ])
+    ])
   ])
 }
 

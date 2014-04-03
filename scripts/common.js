@@ -30,21 +30,43 @@ common.formSection = function(icon, content, help, i){
   ])
 }
 
-common.tabs = function(arr){
+common.tabs = {};
+
+common.tabs.view = function(ctrl, arr){
   return m("dl.tabs[data-tab]", [
     arr.map(function(item, i){
       var setActive = function(i){
-        if(i == 0){
+        if(ctrl.isActive(item.label, i)){
           return "active";
         } else {
           return "";
         }
       };
       return m("dd", {class: setActive(i)}, [
-        m("a", item.label)
+        m("a", {onclick: function(){
+          ctrl.setActive(item.label);
+        }}, item.label)
       ]);
     })
   ])
+}
+
+common.tabs.controller = function(){
+  this.currentTab = m.prop("");
+  this.isActive = function(label, index){
+    if(!this.currentTab()){
+      if(index == 0){
+        return true;
+      }
+    } else if(this.currentTab() === label){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  this.setActive = function(label){
+    this.currentTab(label);
+  }
 }
 
 common.renderString = function(str){

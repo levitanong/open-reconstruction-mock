@@ -3608,6 +3608,8 @@ section.summary {
     clear: both; }
   .event:first-child {
     padding-top: 40px; }
+  .event:last-child .details {
+    border-bottom: none; }
   .event .date {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -3658,3 +3660,9 @@ h1 small {
     background-color: #ff851b; }
   .swatch.black {
     background-color: rgba(0, 0, 0, 0.3); }
+
+.actions {
+  background-color: white; }
+  .actions .action {
+    margin-left: 90px;
+    padding: 20px 0px; }
