@@ -1,4 +1,5 @@
 projectCreation.controller = function(){
+  this.app = new app.controller();
   this.initMap = function(elem){
     var map = L.map(elem, {drawControl: true, scrollWheelZoom: false}).setView([51.505, -0.09], 13);
 
