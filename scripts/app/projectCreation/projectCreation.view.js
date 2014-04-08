@@ -21,16 +21,30 @@ projectCreation.view = function(ctrl){
       content: [
         m("h2", "Basic Information"),
         m("label", [
-          "Type",
-          m("select", ["Road", "Bridge", "Public Building", "School Building"].map(function(e){return m("option", e)}))
-        ]),
-        m("label", [
           "Description",
           m("input", {type: "text", placeholder: "Sea Wall for this town"})
         ]),
         m("label", [
+          "Type",
+          m("select", {onchange: m.withAttr("value", ctrl.projectType), value: ctrl.projectType()}, ["Road", "Bridge", "Public Building", "School Building"].map(function(e){return m("option", e)}))
+        ]),
+        helper.selfun(function(){
+          if(ctrl.projectType() == "Bridge"){
+            return m("label", [
+              "Parent Road",
+              m("input", {type: "text", placeholder: "Tagbilaran North Road"})
+            ])
+          } else {
+            return "";
+          }
+        }),
+        m("label", [
           "Amount",
           m("input", {type: "number"})
+        ]),
+        m("label", [
+          "Scope of Work",
+          m("select", {onchange: m.withAttr("value", ctrl.scopeOfWork), value: ctrl.scopeOfWork()}, ["Reconstruction", "Repair and Rehabilitation", "Other"].map(function(e){return m("option", e)}))
         ]),
         m("label", [
           "Location",
