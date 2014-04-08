@@ -12,7 +12,11 @@ projectListing.view = function(ctrl){
           project.listView(ctrl)
         ]),
         m("div", {class: "columns medium-3"}, [
-          m("a.button", {href: "/projects/new", config: m.route}, "New Request"),
+          helper.selfun(function(){
+            if(ctrl.app.isLoggedIn()){
+              return m("a.button", {href: "/projects/new", config: m.route}, "New Request")
+            }
+          }),
           m("ul", [
             m("li", [
               m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
