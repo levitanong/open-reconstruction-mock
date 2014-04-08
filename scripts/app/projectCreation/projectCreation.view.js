@@ -16,18 +16,14 @@ projectCreation.view = function(ctrl){
       ],
       help: "Specify the disaster to give everyone context about your request. Insert all these other details etc..."
     },
-    // {
-    //   icon: "fa-map-marker",
-    //   content: [
-    //     m("h2", "Location"),
-        
-    //   ],
-    //   help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
-    // },
     {
       icon: "fa-briefcase",
       content: [
-        m("h2", "Project"),
+        m("h2", "Basic Information"),
+        m("label", [
+          "Type",
+          m("select", ["Road", "Bridge", "Public Building", "School Building"].map(function(e){return m("option", e)}))
+        ]),
         m("label", [
           "Description",
           m("input", {type: "text", placeholder: "Sea Wall for this town"})
