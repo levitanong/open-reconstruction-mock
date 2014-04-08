@@ -15,4 +15,8 @@ app.controller = function(){
       return user.department === "NDRRMC";
     });
   };
+  this.db = {};
+  this.db.clear = function(){
+    localStorage.clear();
+  };
 }
