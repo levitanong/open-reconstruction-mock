@@ -7,6 +7,7 @@ projectCreation.view = function(ctrl){
         m("h2", "Disaster"),
         m("label", [
           "Disaster Name",
+          m("select", ["Typhoon", "Earthquake", "Flood", "Fire", "Other"].map(function(e){return m("option", e)})),
           m("input", {type: 'text', placeholder: 'Yolanda, Pepeng, Piping, Popong, etc...'})
         ])
       ],

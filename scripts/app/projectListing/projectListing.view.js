@@ -21,11 +21,13 @@ projectListing.view = function(ctrl){
             m("li", [
               m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
             ]),
-            ctrl.projectFilters().map(function(filter){
+            _.chain(ctrl.projectFilters())
+            .map(function(filter){
               return m("li", [
                 m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, filter)}, filter)
               ])
             })
+            .value()
           ])
         ])
       ])
