@@ -6,21 +6,24 @@ projectCreation.view = function(ctrl){
       content: [
         m("h2", "Disaster"),
         m("label", [
-          "Disaster Name",
+          "Disaster Type",
           m("select", ["Typhoon", "Earthquake", "Flood", "Fire", "Other"].map(function(e){return m("option", e)})),
+        ]),
+        m("label", [
+          "Disaster Name", 
           m("input", {type: 'text', placeholder: 'Yolanda, Pepeng, Piping, Popong, etc...'})
         ])
       ],
       help: "Specify the disaster to give everyone context about your request. Insert all these other details etc..."
     },
-    {
-      icon: "fa-map-marker",
-      content: [
-        m("h2", "Location"),
-        m("div", {id: "map", config: ctrl.initMap})
-      ],
-      help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
-    },
+    // {
+    //   icon: "fa-map-marker",
+    //   content: [
+    //     m("h2", "Location"),
+        
+    //   ],
+    //   help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
+    // },
     {
       icon: "fa-briefcase",
       content: [
@@ -32,6 +35,10 @@ projectCreation.view = function(ctrl){
         m("label", [
           "Amount",
           m("input", {type: "number"})
+        ]),
+        m("label", [
+          "Location",
+          m("div", {id: "map", config: ctrl.initMap})
         ])
       ],
       help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
