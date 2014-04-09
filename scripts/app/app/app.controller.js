@@ -17,7 +17,6 @@ app.controller = function(){
   };
   this.getLoggedIn = function(){
     var currentUserId = localStorage["currentUser"];
-    console.log(database.userList())
     return this.findUserBySlug(database.userList(), currentUserId);
   }.bind(this);
   this.findUserBySlug = function(list, slug){
