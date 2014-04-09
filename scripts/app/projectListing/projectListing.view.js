@@ -14,7 +14,7 @@ projectListing.view = function(ctrl){
         m("div", {class: "columns medium-3"}, [
           helper.selfun(function(){
             if(ctrl.app.isLoggedIn()){
-              return m("a.button", {href: "/new", config: m.route}, "New Request")
+              return m("a.button", {href: "/projects/new", config: m.route}, "New Request")
             }
           }),
           m("ul", [

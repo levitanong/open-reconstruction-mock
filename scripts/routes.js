@@ -2,9 +2,9 @@
 ////////////////////////////////////////////////////
 // routes
 
-m.route(document.body, "/projects", {
+m.route(document, "/projects", {
   "/projects": projectListing,
-  "/new": projectCreation,
+  "/projects/new": projectCreation,
   "/projects/:id": project,
   "/dashboard": dashboard,
   "/user/:id": user
