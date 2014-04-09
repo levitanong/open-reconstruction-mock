@@ -1,15 +1,29 @@
 app.controller = function(){
   this.currentUser = app.currentUser;
   this.isLoggedIn = function(){
-    if(this.currentUser().constructor === user.GUEST){
-      return false;
-    } else {
+    var currentUserId = localStorage["currentUser"];
+    if(currentUserId && this.findUserBySlug(database.userList(), currentUserId)){
       return true;
+    } else {
+      return false;
     }
+  }.bind(this);
+  this.login = function(user){
+    localStorage["currentUser"] = user.slug
   };
   this.logout = function(){
-    this.currentUser(new user.GUEST());
-  }
+    // this.currentUser(new user.GUEST());
+    localStorage["currentUser"] = null;
+  };
+  this.getLoggedIn = function(){
+    var currentUserId = localStorage["currentUser"];
+    return this.findUserBySlug(database.userList(), currentUserId);
+  }.bind(this);
+  this.findUserBySlug = function(list, slug){
+    return _.find(list, function(u){
+      return u.slug == slug;
+    });
+  };
   this.authorizedUsers = function(){
     return database.userList().filter(function(user){
       return user.department === "NDRRMC";

@@ -52,7 +52,7 @@ app.navbar = function(ctrl){
           m("a", {href: "#"}, [
             helper.selfun(function(){
               if(ctrl.app.isLoggedIn()){
-                return ctrl.app.currentUser().name;
+                return ctrl.app.getLoggedIn().name;
               } else {
                 return "Guest";
               }
@@ -62,7 +62,7 @@ app.navbar = function(ctrl){
             ctrl.app.authorizedUsers().map(function(user){
               return m("li", [
                 m("a", {onclick: function(){
-                  ctrl.app.currentUser(user)
+                  ctrl.app.login(user)
                 }}, user.name)
               ])
             }),
