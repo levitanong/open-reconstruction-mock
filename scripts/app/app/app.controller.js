@@ -30,14 +30,19 @@ app.controller = function(){
       return user.department === "NDRRMC";
     });
   };
-  this.initMap = function(elem, config){
-    var map = L.map(elem, config).setView([11.3333, 123.0167], 5);
+  this.initMap = function(elem, isInit, config){
+    if(!isInit){
+      window.setTimeout(function(){
+        var map = L.map(elem, config).setView([11.3333, 123.0167], 5);
 
-    // create the tile layer with correct attribution
-    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-    var osm = new L.TileLayer(osmUrl, {minZoom: 5, maxZoom: 19, attribution: osmAttrib});   
-    map.addLayer(osm);
+        // create the tile layer with correct attribution
+        var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
+        var osm = new L.TileLayer(osmUrl, {minZoom: 5, maxZoom: 19, attribution: osmAttrib});   
+        map.addLayer(osm);
+      }, 0)
+    }
+    
   };
   this.db = {};
   this.db.clear = function(){
