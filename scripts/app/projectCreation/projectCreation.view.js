@@ -23,8 +23,8 @@ projectCreation.view = function(ctrl){
         m("h2", "Basic Information"),
         common.field(
           "Description",
-          m("textarea", {type: "text", placeholder: "Sea Wall for this town"}),
-          "This is what everyone will see. Please keep the description short, clear, and well-worded."
+          m("input", {type: "text", placeholder: "Sea Wall for this town"}),
+          "This is what everyone will see. Keep it short and clear."
         ),
         common.field(
           "Type",
