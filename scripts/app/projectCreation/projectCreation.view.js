@@ -6,13 +6,39 @@ projectCreation.view = function(ctrl){
       content: [
         m("h2", "Disaster"),
         common.field(
-          "Disaster Type",
+          "Type",
           m("select", ["Typhoon", "Earthquake", "Flood", "Fire", "Other"].map(function(e){return m("option", e)}))
         ),
         common.field(
-          "Disaster Name",
+          "Name",
           m("input", {type: 'text', placeholder: 'Yolanda, Pepeng, Piping, Popong, etc...'}),
           "Only if it applies. Please be careful with spelling."
+        ),
+        common.field(
+          "Date",
+          m("div.row", [
+            m("div.columns.medium-4", [
+              m("select", [
+                _.range(0, 12).map(function(month){
+                  return m("option", helper.monthArray[month]);
+                })
+              ])
+            ]),
+            m("div.columns.medium-4", [
+              m("select", [
+                _.range(1, 32).map(function(day){
+                  return m("option", day);
+                })
+              ])
+            ]),
+            m("div.columns.medium-4", [
+              m("select", [
+                _.range(2001, 2015).map(function(year){
+                  return m("option", year);
+                })
+              ])
+            ])
+          ])
         )
       ],
       // help: "Specify the disaster to give everyone context about your request. Insert all these other details etc..."
