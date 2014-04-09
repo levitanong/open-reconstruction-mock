@@ -48,9 +48,6 @@ app.navbar = function(ctrl){
         menuItems.map(menuItem)
       ]),
       m("ul.right", [
-        m("li", [
-          m("a", {onclick: ctrl.app.db.clear.bind(ctrl.app.db.clear)}, "Clear database")
-        ]),
         m("li.has-dropdown.not-click", [
           m("a", {href: "#"}, [
             helper.selfun(function(){

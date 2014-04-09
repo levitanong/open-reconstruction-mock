@@ -15,7 +15,8 @@ project.controller = function(){
 
 
   this.initMap = function(elem){
-    if(!elem.classList.contains("leaflet-container")){
+    // classList.contains("leaflet-container")
+    if(!elem.children.length){
       this.app.initMap(elem, {scrollWheelZoom: false});
     }
   }.bind(this)
