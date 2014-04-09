@@ -11,7 +11,23 @@ common.banner = function(text){
   ]);
 }
 
-common.formSection = function(icon, content, help, i){
+common.field = function(name, content, help){
+  return m("label", [
+    m("div.row", [
+      m("div.columns.medium-12", name)
+    ]),
+    m("div.row", [
+      m("div.columns.medium-8", [
+        content
+      ]),
+      m("div.columns.medium-4", [
+        m("p.help", help)
+      ])
+    ])
+  ])
+}
+
+common.formSection = function(icon, content, i){
   var alternate = function(i){
     if(i % 2 == 1){
       return "alt";
@@ -24,8 +40,8 @@ common.formSection = function(icon, content, help, i){
       m("div.columns.medium-2", [
         m("i.fa.fa-5x.fa-fw", {"class": icon})
       ]),
-      m("div.columns.medium-7", content),
-      m("div.columns.medium-3", [m("p", help)])
+      m("div.columns.medium-10", content)
+      // m("div.columns.medium-3", [m("p", help)])
     ])
   ])
 }
