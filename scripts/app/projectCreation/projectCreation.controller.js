@@ -3,8 +3,9 @@ projectCreation.controller = function(){
   this.projectType = m.prop("Road");
   this.scopeOfWork = m.prop("Reconstruction");
   this.initMap = function(elem){
-    // if(!elem.children.length){
-    //   this.app.initMap(elem, {drawControl: true, scrollWheelZoom: false});
-    // }
+    if(!elem.children.length){
+      this.app.initMap(elem, {drawControl: true, scrollWheelZoom: false});
+    }
   }.bind(this);
+  database.pull();
 }
