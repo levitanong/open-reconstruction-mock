@@ -1,6 +1,8 @@
 var dictio = {};
 dictio.disasters = m.prop({
-  "T": "Typhoon"
+  "T": "Typhoon",
+  "E": "Earthquake",
+  "F": "Flooding"
 });
 
 var database = {

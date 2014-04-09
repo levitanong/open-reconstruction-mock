@@ -15,18 +15,9 @@ project.controller = function(){
 
 
   this.initMap = function(elem){
-    if(!elem.classList.contains("leaflet-container")){
-      var map = L.map(elem, {scrollWheelZoom: false}).setView([51.505, -0.09], 13);
-      var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-      var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-      var osm = new L.TileLayer(osmUrl, {minZoom: 8, maxZoom: 12, attribution: osmAttrib});   
-
-      // start the map in South-East England
-      map.setView(new L.LatLng(51.3, 0.7),9);
-      map.addLayer(osm);
-
-      L.tileLayer(osmUrl, {attribution: osmAttrib, maxZoom: 18}).addTo(map);
-      // create the tile layer with correct attribution
-    } 
-  }
+    // classList.contains("leaflet-container")
+    if(!elem.children.length){
+      this.app.initMap(elem, {scrollWheelZoom: false});
+    }
+  }.bind(this)
 }

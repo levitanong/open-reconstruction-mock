@@ -1558,7 +1558,7 @@ L.Map = L.Class.extend({
 
 	initialize: function (id, options) { // (HTMLElement or String, Object)
 		options = L.setOptions(this, options);
-
+		// console.log(id, options);
 
 		this._initContainer(id);
 		this._initLayout();

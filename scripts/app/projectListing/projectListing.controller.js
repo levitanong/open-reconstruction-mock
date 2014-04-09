@@ -15,7 +15,4 @@ projectListing.controller = function(){
     self.projectList = database.projectList;
     self.projectFilters = database.projectFilters;
   });
-  
-
-  // console.log(projectList);
 }

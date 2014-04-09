@@ -6,31 +6,45 @@ projectCreation.view = function(ctrl){
       content: [
         m("h2", "Disaster"),
         m("label", [
-          "Disaster Name",
+          "Disaster Type",
+          m("select", ["Typhoon", "Earthquake", "Flood", "Fire", "Other"].map(function(e){return m("option", e)})),
+        ]),
+        m("label", [
+          "Disaster Name", 
           m("input", {type: 'text', placeholder: 'Yolanda, Pepeng, Piping, Popong, etc...'})
         ])
       ],
       help: "Specify the disaster to give everyone context about your request. Insert all these other details etc..."
     },
     {
-      icon: "fa-map-marker",
-      content: [
-        m("h2", "Location"),
-        m("div", {id: "map", config: ctrl.initMap})
-      ],
-      help: "Now tell us where the request should be sent. We've filled these up for you if we have your address on file. Don't worry, you can change this if you're making this request for someone else."
-    },
-    {
       icon: "fa-briefcase",
       content: [
-        m("h2", "Project"),
+        m("h2", "Basic Information"),
         m("label", [
           "Description",
           m("input", {type: "text", placeholder: "Sea Wall for this town"})
         ]),
         m("label", [
+          "Type",
+          m("select", {onchange: m.withAttr("value", ctrl.projectType), value: ctrl.projectType()}, ["Road", "Bridge", "Public Building", "School Building"].map(function(e){return m("option", e)}))
+        ]),
+        m.if(ctrl.projectType() == "Bridge",
+          m("label", [
+            "Parent Road",
+            m("input", {type: "text", placeholder: "Tagbilaran North Road"})
+          ])
+        ),
+        m("label", [
           "Amount",
           m("input", {type: "number"})
+        ]),
+        m("label", [
+          "Scope of Work",
+          m("select", {onchange: m.withAttr("value", ctrl.scopeOfWork), value: ctrl.scopeOfWork()}, ["Reconstruction", "Repair and Rehabilitation", "Other"].map(function(e){return m("option", e)}))
+        ]),
+        m("label", [
+          "Location",
+          m("div", {id: "map", config: ctrl.initMap})
         ])
       ],
       help: "Now tell us about this project. Please be as brief as you can when describing your project. Making it simple and easy to understand will make your project more likely to be approved."
@@ -39,7 +53,6 @@ projectCreation.view = function(ctrl){
       icon: "fa-paperclip",
       content: [
         m("h2", "Attachment"),
-        m("button", {type: "button"}, "Upload"),
         m("h3", "Endorsements"),
         m("button", {type: "button"}, "Upload"),
         m("h3", "Costing Estimates"),

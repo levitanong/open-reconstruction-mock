@@ -165,13 +165,16 @@ project.listView = function(ctrl){
       ])
     ]),
     m("tbody", [
-      ctrl.projectList()
+      _.chain(ctrl.projectList())
       .filter(function(p){
         if(!ctrl.currentFilter.projects()){
           return true;
         } else {
           return p.type() == ctrl.currentFilter.projects();
         }
+      })
+      .sortBy(function(p){
+        return p.date();
       })
       .map(function(project){
         var url = "/projects/"+project.id();
@@ -186,6 +189,7 @@ project.listView = function(ctrl){
           m("td.text-right", helper.commaize(project.amount()))
         ])
       })
+      .value()
     ])
   ])
 }
