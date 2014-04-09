@@ -10,11 +10,6 @@ projectCreation.view = function(ctrl){
           m("select", ["Typhoon", "Earthquake", "Flood", "Fire", "Other"].map(function(e){return m("option", e)}))
         ),
         common.field(
-          "Name",
-          m("input", {type: 'text', placeholder: 'Yolanda, Pepeng, Piping, Popong, etc...'}),
-          "Only if it applies. Please be careful with spelling."
-        ),
-        common.field(
           "Date",
           m("div.row", [
             m("div.columns.medium-4", [
@@ -39,6 +34,11 @@ projectCreation.view = function(ctrl){
               ])
             ])
           ])
+        ),
+        common.field(
+          "Name",
+          m("input", {type: 'text', placeholder: 'Yolanda, Pepeng, Piping, Popong, etc...'}),
+          "Only if it applies. Please be careful with spelling."
         )
       ],
       // help: "Specify the disaster to give everyone context about your request. Insert all these other details etc..."
@@ -49,7 +49,7 @@ projectCreation.view = function(ctrl){
         m("h2", "Basic Information"),
         common.field(
           "Description",
-          m("input", {type: "text", placeholder: "Sea Wall for this town"}),
+          m("input", {type: "text", placeholder: "Seawall for this town"}),
           "This is what everyone will see. Keep it short and clear."
         ),
         common.field(
