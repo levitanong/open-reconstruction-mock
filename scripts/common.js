@@ -20,7 +20,7 @@ common.field = function(name, content, help){
       m("div.columns.medium-8", [
         content
       ]),
-      m("div.columns.medium-4", [
+      m("div.columns.medium-4.help-container", [
         m("p.help", help)
       ])
     ])
