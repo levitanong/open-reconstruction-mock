@@ -177,6 +177,8 @@ var helper = {
 m.if = function(bool, elem){
   if(bool){
     return elem;
+  } else {
+    return null;
   }
 }
 

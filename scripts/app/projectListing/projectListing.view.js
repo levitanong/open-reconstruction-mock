@@ -12,14 +12,13 @@ projectListing.view = function(ctrl){
           project.listView(ctrl)
         ]),
         m("div", {class: "columns medium-3"}, [
-          // helper.selfun(function(){
-          //   if(ctrl.app.isLoggedIn()){
-          //     return m("a.button", {href: "/projects/new", config: m.route}, "New Request")
-          //   } else {
-          //     return m("div", "hi")
-          //   }
-          // }),
-          ctrl.app.isLoggedIn() ? m("div", [m("a.button", {href: "/projects/new", config: m.route}, "New Request")]) : m("div", ""),
+          m.if(ctrl.app.isLoggedIn(),
+            m(
+              "a.button", 
+              {href: "/projects/new", config: m.route}, 
+              "New Request"
+            )
+          ),
           m("ul", [
             m("li", [
               m("a", {onclick: ctrl.currentFilter.projects.bind(ctrl.currentFilter, "")}, "All")
