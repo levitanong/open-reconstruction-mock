@@ -74,17 +74,17 @@ new function(window) {
 				cached = {
 					tag: data.tag,
 					attrs: setAttributes(node, data.attrs, {}, namespace),
-					children: build(node, data.children, cached.children, true, index, namespace),
+					children: build(node, data.children, cached.children, true, 0, namespace),
 					nodes: [node]
 				}
-				parent.insertBefore(node, index !== undefined ? parent.childNodes[index] : null)
+				parent.insertBefore(node, parent.childNodes[index] || null)
 			}
 			else {
 				node = cached.nodes[0]
 				setAttributes(node, data.attrs, cached.attrs, namespace)
-				cached.children = build(node, data.children, cached.children, false, index, namespace)
+				cached.children = build(node, data.children, cached.children, false, 0, namespace)
 				cached.nodes.intact = true
-				if (shouldReattach === true) parent.insertBefore(node, index !== undefined ? parent.childNodes[index] : null)
+				if (shouldReattach === true) parent.insertBefore(node, parent.childNodes[index] || null)
 			}
 			if (type.call(data.attrs["config"]) == "[object Function]") data.attrs["config"](node, !isNew)
 		}
@@ -92,13 +92,11 @@ new function(window) {
 			var node
 			if (cached.nodes.length === 0) {
 				if (data.$trusted) {
-					var lastChild = parent.lastChild
-					parent.insertAdjacentHTML("beforeend", data)
-					node = lastChild ? lastChild.nextSibling : parent.firstChild
+					node = injectHTML(parent, index, data)
 				}
 				else {
 					node = window.document.createTextNode(data)
-					parent.insertBefore(node, index !== undefined ? parent.childNodes[index] : null)
+					parent.insertBefore(node, parent.childNodes[index] || null)
 				}
 				cached = "string number boolean".indexOf(typeof data) > -1 ? new data.constructor(data) : data
 				cached.nodes = [node]
@@ -109,15 +107,13 @@ new function(window) {
 					if (current) {
 						while (current = current.nextSibling) nodes.push(current)
 						clear(nodes)
-						var lastChild = parent.lastChild
-						parent.insertAdjacentHTML("beforeend", data)
-						node = lastChild ? lastChild.nextSibling : parent.firstChild
+						node = injectHTML(parent, index, data)
 					}
 					else parent.innerHTML = data
 				}
 				else {
 					node = cached.nodes[0]
-					parent.insertBefore(node, index !== undefined ? parent.childNodes[index] : null)
+					parent.insertBefore(node, parent.childNodes[index] || null)
 					node.nodeValue = data
 				}
 				cached = new data.constructor(data)
@@ -157,6 +153,12 @@ new function(window) {
 	function clear(nodes) {
 		for (var i = 0; i < nodes.length; i++) nodes[i].parentNode.removeChild(nodes[i])
 		nodes.length = 0
+	}
+	function injectHTML(parent, index, data) {
+		var nextSibling = parent.childNodes[index]
+		if (nextSibling) nextSibling.insertAdjacentHTML("beforebegin", data)
+		else parent.insertAdjacentHTML("beforeend", data)
+		return nextSibling ? nextSibling.previousSibling : parent.firstChild
 	}
 	function clone(object) {
 		var result = {}
