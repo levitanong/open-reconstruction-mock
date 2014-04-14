@@ -1,0 +1,28 @@
+<!doctype html>
+<script src="bower_components/mithril/mithril.min.js"></script>
+<script>
+app = {
+  controller: function(){
+    this.someList = m.prop([1, 2, 3, 4, 5, 6]);
+    this.isVisible = m.prop(true);
+    this.toggleVisible = function(){
+      this.isVisible(!this.isVisible());
+    }
+  },
+  view: function(ctrl){
+    return m("div", [
+      m("button", 
+        {onclick: ctrl.toggleVisible.bind(ctrl)}, 
+        "toggle!"),
+      m("div", [
+        // ctrl.isVisible() ? m("div", "on") : m("div", "off"),
+        ctrl.isVisible() ? m("div", "on") : m("div", ""),
+        // ctrl.isVisible() ? m("div", "on") : m("span", "off"),
+        //ctrl.isVisible() ? m("div", "on") : "", also funky
+        m("div", "all the other shit")
+      ])
+    ]);
+  }
+}
+m.module(document, app);
+</script>
