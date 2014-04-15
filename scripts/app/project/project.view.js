@@ -57,7 +57,15 @@ project.view = function(ctrl){
           m("div.project-stub", [
             m("div.section", [
               m("h4", ctrl.project().description()),
-              m("span.label", ctrl.project().type())
+              m("span.label", ctrl.project().type()),
+              m("h4", [
+                m("small", [
+                  "Posted by ",
+                  m("a",{href: "/user/"+ctrl.project().author().slug, config: m.route}, ctrl.project().author().name),
+                  " on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
+                ]),
+                renderErrorList(ctrl.project().errors())
+              ]),
             ]),
             m("div.section", [
               m("h5", [m("small", "Amount")]),
@@ -89,9 +97,7 @@ project.view = function(ctrl){
               ])
             ]),
             m("div#detailMap", {config: ctrl.initMap})
-          ])
-        ]),
-        m("div.columns.medium-8", [
+          ]),
           m("div.prog", [
             _.chain(process.steps())
               .map(function(step, code, list){
@@ -109,50 +115,47 @@ project.view = function(ctrl){
               })
               .value()
           ]),
-          m("h4", [
-            m("small", [
-              "Posted by ",
-              m("a",{href: "/user/"+ctrl.project().author().slug, config: m.route}, ctrl.project().author().name),
-              " on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
+        ]),
+        m("div.columns.medium-8", [
+          m("h4", "Images"),
+          m("ul.small-block-grid-3", [
+            m("li", [
+              m("img[src='http://placehold.it/400x300']")
             ]),
-            renderErrorList(ctrl.project().errors())
+            m("li", [
+              m("img[src='http://placehold.it/400x300']")
+            ]),
+            m("li", [
+              m("img[src='http://placehold.it/400x300']")
+            ])
           ]),
+          m("h4", "Documents"),
+          m("table.doc-list", [
+            m("thead", [
+              m("tr", [
+                m("td", "document"),
+                m("td", "type")
+              ])
+            ]),
+            m("tbody", [
+              m("tr", [
+                m("td", "hi"),
+                m("td", "BP202")
+              ])
+            ])
+          ])
           
-        ])
-      ]),
-      m("div.row", [
-        m("div.columns.medium-3", [
-          m("h4", [m("small", "Amount")]),
-          m("h4.value", [
-            common.renderString(
-              helper.commaize(ctrl.project().amount())
-            )
-          ])
-        ]),
-        m("div.columns.medium-3", [
-          m("h4", [m("small", "Type")]),
-          m("h4.value", [
-            ctrl.project().type()
-          ])
-        ]),
-        m("div.columns.medium-3", [
-          m("h4", [m("small", "Disaster")]),
-          m("h4.value", [
-            common.renderString(ctrl.project().disaster().type() + " " + ctrl.project().disaster().name() + ", in " + ctrl.project().disaster().date().toDateString())  
-          ])
-        ]),
-        m("div.columns.medium-3", [
-          
+          // historyEvent.calamity(ctrl.project().disaster()),
+          // ctrl.project().history().map(function(entry){
+          //   return historyEvent.project(entry);
+          // })
         ])
       ])
     ]),
     m("section.history", [
       m("div.row", [
         m("div.columns.medium-9", [
-          historyEvent.calamity(ctrl.project().disaster()),
-          ctrl.project().history().map(function(entry){
-            return historyEvent.project(entry);
-          })
+          
         ]),
         m("div.columns.medium-3", [
 
