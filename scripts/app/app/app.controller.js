@@ -20,7 +20,6 @@ app.controller = function(){
     return this.findUserBySlug(database.userList(), currentUserId);
   }.bind(this);
   this.findUserBySlug = function(list, slug){
-    // console.log(list, slug);
     return _.find(list, function(u){
       return u.slug == slug;
     });
