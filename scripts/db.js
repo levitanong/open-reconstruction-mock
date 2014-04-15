@@ -127,7 +127,8 @@ database.pull = function(){
       .value();
 
     var authorizedUsers = [
-      {name: "Joseph Gordon Levitt", department: "NDRRMC"}
+      {name: "Joseph Gordon Levitt", department: "OCD"},
+      {name: "Ellie Goulding", department: "DPWH"}
     ]
 
     database.userList(
@@ -135,6 +136,9 @@ database.pull = function(){
       .map(function(u){
         return new user.NGA(u.name, u.department);
       })
+      // .tap(function(d){
+      //   console.log(d);
+      // })
       .union(database.userList())
       .unique(function(u){
         return u.name;

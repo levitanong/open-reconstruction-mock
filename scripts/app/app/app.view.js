@@ -59,6 +59,7 @@ app.navbar = function(ctrl){
             })
           ]),
           m("ul.dropdown", [
+            console.log(ctrl.app.authorizedUsers()),
             ctrl.app.authorizedUsers().map(function(user){
               return m("li", [
                 m("a", {onclick: function(){

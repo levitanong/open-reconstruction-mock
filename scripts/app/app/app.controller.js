@@ -27,7 +27,7 @@ app.controller = function(){
   };
   this.authorizedUsers = function(){
     return database.userList().filter(function(user){
-      return user.department === "NDRRMC";
+      return user.department === "OCD" || user.department === "DPWH";
     });
   };
   this.initMap = function(elem, isInit, config){

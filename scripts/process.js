@@ -42,7 +42,7 @@ process.permissions = m.prop({
   "LGU": [5],
   "GOCC": [5],
   "NGA": [5], // clarify with stella
-  "NDRRMC": [10, 40],
+  "OCD": [10, 40],
   "DPWH": [20, 30],
   "DBM": [10, 40, 60],
   "OP": [50]
