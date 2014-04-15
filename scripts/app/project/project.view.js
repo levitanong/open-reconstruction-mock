@@ -148,34 +148,18 @@ project.view = function(ctrl){
                 m("td", "BP202")
               ])
             ])
-          ])
-          
-          // historyEvent.calamity(ctrl.project().disaster()),
-          // ctrl.project().history().map(function(entry){
-          //   return historyEvent.project(entry);
-          // })
-        ])
-      ])
-    ]),
-    m("section.history", [
-      m("div.row", [
-        m("div.columns.medium-9", [
-          
-        ]),
-        m("div.columns.medium-3", [
-
-        ])
-      ])
-    ]), 
-    m("section.actions", [
-      m("div.row", [
-        m("div.columns.medium-9", [
+          ]),
+          m("h4", "History"),
+          historyEvent.calamity(ctrl.project().disaster()),
+          ctrl.project().history().map(function(entry){
+            return historyEvent.project(entry);
+          }),
           m(".action", [
             userActions(ctrl)
           ])
         ])
       ])
-    ])
+    ]),
   ])
 }
 
