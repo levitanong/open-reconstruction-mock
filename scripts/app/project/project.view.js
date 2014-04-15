@@ -50,10 +50,48 @@ project.view = function(ctrl){
   }
 
   return app.template(ctrl, {class: "detail"}, [
-    m("div#detailMap", {config: ctrl.initMap}),
+    // m("div#detailMap", {config: ctrl.initMap}),
     m("section.summary", [
       m("div.row", [
-        m("div.columns.medium-12", [
+        m("div.columns.medium-4", [
+          m("div.project-stub", [
+            m("div.section", [
+              m("h4", ctrl.project().description()),
+              m("span.label", ctrl.project().type())
+            ]),
+            m("div.section", [
+              m("h5", [m("small", "Amount")]),
+              m("h5.value", [
+                common.renderString(
+                  helper.commaize(ctrl.project().amount())
+                )
+              ]),
+              m("h5", [m("small", "Disaster")]),
+              m("h5.value", [
+                common.renderString(ctrl.project().disaster().type() + " " + ctrl.project().disaster().name() + ", in " + ctrl.project().disaster().date().toDateString())  
+              ]),
+              m("h5", [m("small", "Location")]),
+              m("h5.value", [
+                common.renderString(
+                  _.chain(ctrl.project().location())
+                  .filter(function(entry){
+                    return entry
+                  })
+                  .reduce(function(memo, next){
+                    if(!memo){
+                      return next;
+                    } else {
+                      return memo + ", " + next;
+                    }
+                  }, "")
+                  .value()
+                )
+              ])
+            ]),
+            m("div#detailMap", {config: ctrl.initMap})
+          ])
+        ]),
+        m("div.columns.medium-8", [
           m("div.prog", [
             _.chain(process.steps())
               .map(function(step, code, list){
@@ -70,11 +108,7 @@ project.view = function(ctrl){
                 }
               })
               .value()
-          ])
-        ]),
-      ]),
-      m("div.row", [
-        m("div.columns.medium-12", [
+          ]),
           m("h4", [
             m("small", [
               "Posted by ",
@@ -83,7 +117,6 @@ project.view = function(ctrl){
             ]),
             renderErrorList(ctrl.project().errors())
           ]),
-          m("h1", ctrl.project().description()),
           
         ])
       ]),
@@ -109,23 +142,7 @@ project.view = function(ctrl){
           ])
         ]),
         m("div.columns.medium-3", [
-          m("h4", [m("small", "Location")]),
-          m("h4.value", [
-            common.renderString(
-              _.chain(ctrl.project().location())
-              .filter(function(entry){
-                return entry
-              })
-              .reduce(function(memo, next){
-                if(!memo){
-                  return next;
-                } else {
-                  return memo + ", " + next;
-                }
-              }, "")
-              .value()
-            )
-          ])
+          
         ])
       ])
     ]),

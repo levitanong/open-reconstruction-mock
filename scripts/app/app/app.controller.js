@@ -39,7 +39,7 @@ app.controller = function(){
         var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
         var osm = new L.TileLayer(osmUrl, {minZoom: 5, maxZoom: 19, attribution: osmAttrib});   
         map.addLayer(osm);
-      }, 0)
+      }, 10)
     }
     
   };
