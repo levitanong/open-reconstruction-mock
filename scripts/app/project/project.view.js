@@ -51,7 +51,29 @@ project.view = function(ctrl){
 
   return app.template(ctrl, {class: "detail"}, [
     // m("div#detailMap", {config: ctrl.initMap}),
+
     m("section.summary", [
+      m("div.row", [
+        m("div.columns.medium-12", [
+          m("div.prog", [
+            _.chain(process.steps())
+              .map(function(step, code, list){
+                var progress = ctrl.project().progress();
+                var code = parseInt(code);
+                var width = 100 / _.keys(list).length + "%";
+
+                if(progress > code){
+                  return m("div.step.completed", {style: {width: width}}, step);
+                } else if (progress === code){
+                  return m("div.step.pending", {style: {width: width}}, step);
+                } else {
+                  return m("div.step", {style: {width: width}}, step);
+                }
+              })
+              .value()
+          ]),
+        ]),
+      ]),
       m("div.row", [
         m("div.columns.medium-4", [
           m("div.project-stub", [
@@ -97,24 +119,7 @@ project.view = function(ctrl){
               ])
             ]),
             m("div#detailMap", {config: ctrl.initMap})
-          ]),
-          m("div.prog", [
-            _.chain(process.steps())
-              .map(function(step, code, list){
-                var progress = ctrl.project().progress();
-                var code = parseInt(code);
-                var width = 100 / _.keys(list).length + "%";
-
-                if(progress > code){
-                  return m("div.step.completed", {style: {width: width}}, step);
-                } else if (progress === code){
-                  return m("div.step.pending", {style: {width: width}}, step);
-                } else {
-                  return m("div.step", {style: {width: width}}, step);
-                }
-              })
-              .value()
-          ]),
+          ])
         ]),
         m("div.columns.medium-8", [
           m("h4", "Images"),
