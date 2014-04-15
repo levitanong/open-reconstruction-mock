@@ -62,11 +62,11 @@ project.view = function(ctrl){
                 var width = 100 / _.keys(list).length + "%";
 
                 if(progress > code){
-                  return m("div.step.completed", {style: {width: width}}, step.completed);
+                  return m("div.step.completed", {style: {width: width}}, step);
                 } else if (progress === code){
-                  return m("div.step.pending", {style: {width: width}}, step.pending);
+                  return m("div.step.pending", {style: {width: width}}, step);
                 } else {
-                  return m("div.step", {style: {width: width}}, step.label);
+                  return m("div.step", {style: {width: width}}, step);
                 }
               })
               .value()
