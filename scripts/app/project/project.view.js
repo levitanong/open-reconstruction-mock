@@ -53,41 +53,49 @@ project.view = function(ctrl){
     // m("div#detailMap", {config: ctrl.initMap}),
 
     m("section.summary", [
-      m("div.row", [
-        m("div.columns.medium-12", [
-          m("div.prog", [
-            _.chain(process.steps())
-              .map(function(step, code, list){
-                var progress = ctrl.project().progress();
-                var code = parseInt(code);
-                var width = 100 / _.keys(list).length + "%";
+      // m("div.row", [
+      //   m("div.columns.medium-12", [
+      //     m("div.prog", [
+      //       _.chain(process.steps())
+      //         .map(function(step, code, list){
+      //           var progress = ctrl.project().progress();
+      //           var code = parseInt(code);
+      //           var width = 100 / _.keys(list).length + "%";
 
-                if(progress > code){
-                  return m("div.step.completed", {style: {width: width}}, step);
-                } else if (progress === code){
-                  return m("div.step.pending", {style: {width: width}}, step);
-                } else {
-                  return m("div.step", {style: {width: width}}, step);
-                }
-              })
-              .value()
-          ]),
-        ]),
-      ]),
+      //           if(progress > code){
+      //             return m("div.step.completed", {style: {width: width}}, step);
+      //           } else if (progress === code){
+      //             return m("div.step.pending", {style: {width: width}}, step);
+      //           } else {
+      //             return m("div.step", {style: {width: width}}, step);
+      //           }
+      //         })
+      //         .value()
+      //     ]),
+      //   ]),
+      // ]),
+      // m("div.row", [
+      //   m("div.columns.medium-12", [
+      //     "Project type"
+      //   ])
+      // ]),
+
       m("div.row", [
         m("div.columns.medium-4", [
           m("div.project-stub", [
+            m("div.section.type", [
+              ctrl.project().type()
+            ]),
             m("div.section", [
               m("h4", ctrl.project().description()),
-              m("span.label", ctrl.project().type()),
-              m("h4", [
-                m("small", [
-                  "Posted by ",
-                  m("a",{href: "/user/"+ctrl.project().author().slug, config: m.route}, ctrl.project().author().name),
-                  " on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
-                ]),
-                renderErrorList(ctrl.project().errors())
+              // m("span.label", ctrl.project().type()),
+              m("p.info", [
+                "Posted by ",
+                m("a",{href: "/user/"+ctrl.project().author().slug, config: m.route}, ctrl.project().author().name),
+                m("br"),
+                " on "+ctrl.project().date().toDateString() + " ", // change this as people modify this. "Last edited by _____"
               ]),
+                // renderErrorList(ctrl.project().errors())
             ]),
             m("div.section", [
               m("h5", [m("small", "Amount")]),
@@ -122,40 +130,44 @@ project.view = function(ctrl){
           ])
         ]),
         m("div.columns.medium-8", [
-          m("h4", "Images"),
-          m("ul.small-block-grid-3", [
-            m("li", [
-              m("img[src='http://placehold.it/400x300']")
-            ]),
-            m("li", [
-              m("img[src='http://placehold.it/400x300']")
-            ]),
-            m("li", [
-              m("img[src='http://placehold.it/400x300']")
-            ])
-          ]),
-          m("h4", "Documents"),
-          m("table.doc-list", [
-            m("thead", [
-              m("tr", [
-                m("td", "document"),
-                m("td", "type")
+          m("div.card", [
+            m("div.section", [
+              m("h4", "Images"),
+              m("ul.small-block-grid-3", [
+                m("li", [
+                  m("img[src='http://placehold.it/400x300']")
+                ]),
+                m("li", [
+                  m("img[src='http://placehold.it/400x300']")
+                ]),
+                m("li", [
+                  m("img[src='http://placehold.it/400x300']")
+                ])
+              ]),
+              m("h4", "Documents"),
+              m("table.doc-list", [
+                m("thead", [
+                  m("tr", [
+                    m("td", "document"),
+                    m("td", "type")
+                  ])
+                ]),
+                m("tbody", [
+                  m("tr", [
+                    m("td", "hi"),
+                    m("td", "BP202")
+                  ])
+                ])
+              ]),
+              m("h4", "History"),
+              historyEvent.calamity(ctrl.project().disaster()),
+              ctrl.project().history().map(function(entry){
+                return historyEvent.project(entry);
+              }),
+              m(".action", [
+                userActions(ctrl)
               ])
-            ]),
-            m("tbody", [
-              m("tr", [
-                m("td", "hi"),
-                m("td", "BP202")
-              ])
             ])
-          ]),
-          m("h4", "History"),
-          historyEvent.calamity(ctrl.project().disaster()),
-          ctrl.project().history().map(function(entry){
-            return historyEvent.project(entry);
-          }),
-          m(".action", [
-            userActions(ctrl)
           ])
         ])
       ])
