@@ -5387,6 +5387,8 @@ th.hide-for-touch {
 
 body.detail {
   background-color: #eeeeee; }
+body .row {
+  max-width: 80rem; }
 
 .portrait {
   border-radius: 50%; }

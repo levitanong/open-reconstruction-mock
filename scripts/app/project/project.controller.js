@@ -1,7 +1,7 @@
 project.controller = function(){
   var self = this;
   this.app = new app.controller();
-  this.documentTabs = new common.tabs.controller();
+  this.projectTabs = new common.tabs.controller();
   this.tabs = new common.tabs.controller();
   this.id = m.route.param("id");
   this.project = m.prop({});

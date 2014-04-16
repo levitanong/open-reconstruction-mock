@@ -85,6 +85,13 @@ common.tabs.controller = function(){
   }
 }
 
+common.tabs.panes = function(ctrl, views){
+  if(!ctrl.currentTab()){
+    ctrl.currentTab(_.keys(views)[0]);
+  }
+  return views[ctrl.currentTab()];
+}
+
 common.renderString = function(str){
   if(str){
     return m("span", str);

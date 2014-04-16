@@ -130,44 +130,53 @@ project.view = function(ctrl){
           ])
         ]),
         m("div.columns.medium-8", [
-          m("div.card", [
-            m("div.section", [
-              m("h4", "Images"),
-              m("ul.small-block-grid-3", [
-                m("li", [
-                  m("img[src='http://placehold.it/400x300']")
-                ]),
-                m("li", [
-                  m("img[src='http://placehold.it/400x300']")
-                ]),
-                m("li", [
-                  m("img[src='http://placehold.it/400x300']")
-                ])
-              ]),
-              m("h4", "Documents"),
-              m("table.doc-list", [
-                m("thead", [
-                  m("tr", [
-                    m("td", "document"),
-                    m("td", "type")
-                  ])
-                ]),
-                m("tbody", [
-                  m("tr", [
-                    m("td", "hi"),
-                    m("td", "BP202")
-                  ])
-                ])
-              ]),
-              m("h4", "History"),
-              historyEvent.calamity(ctrl.project().disaster()),
-              ctrl.project().history().map(function(entry){
-                return historyEvent.project(entry);
-              }),
-              m(".action", [
-                userActions(ctrl)
+          m(".card", [
+            m(".section", [
+              common.tabs.view(ctrl.projectTabs, [
+                {label: "Attachments"}, {label: "History"}, {label: "Discussion"}
               ])
-            ])
+            ]),
+            common.tabs.panes(ctrl.projectTabs, {
+              "Attachments": m(".section", [
+                m("h4", "Images"),
+                m("ul.small-block-grid-3", [
+                  m("li", [
+                    m("img[src='http://placehold.it/400x300']")
+                  ]),
+                  m("li", [
+                    m("img[src='http://placehold.it/400x300']")
+                  ]),
+                  m("li", [
+                    m("img[src='http://placehold.it/400x300']")
+                  ])
+                ]),
+                m("h4", "Documents"),
+                m("table.doc-list", [
+                  m("thead", [
+                    m("tr", [
+                      m("td", "document"),
+                      m("td", "type")
+                    ])
+                  ]),
+                  m("tbody", [
+                    m("tr", [
+                      m("td", "hi"),
+                      m("td", "BP202")
+                    ])
+                  ])
+                ]),
+              ]),
+              "History": m(".section", [
+                m("h4", "History"),
+                historyEvent.calamity(ctrl.project().disaster()),
+                ctrl.project().history().map(function(entry){
+                  return historyEvent.project(entry);
+                }),
+                m(".action", [
+                  userActions(ctrl)
+                ])
+              ])
+            })
           ])
         ])
       ])
