@@ -5524,8 +5524,6 @@ section.summary {
     display: table; }
   .event:after {
     clear: both; }
-  .event:first-child {
-    padding-top: 40px; }
   .event:last-child .details {
     border-bottom: none; }
   .event .date {
