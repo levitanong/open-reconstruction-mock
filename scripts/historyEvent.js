@@ -15,7 +15,7 @@ historyEvent.calamity = function(data){
     historyEvent.date(data.date()),
     m(".details", [
       m("h3", data.type() + " " + data.name()),
-      m("p.timestamp", helper.timeago(data.date()))
+      m("p.meta", helper.timeago(data.date()))
     ]),
   ])
 }
@@ -32,7 +32,7 @@ historyEvent.project = function(data){
     m(".details", [
       m("h3", data.title()),
       m("p", data.description()),
-      m("p.timestamp", [
+      m("p.meta", [
         pastTense(data.type()) + " by ",
         m("a", {href: "/user/" + data.editor().slug, config: m.route}, data.editor().name),
         helper.timeago(data.timestamp())

@@ -89,7 +89,7 @@ project.view = function(ctrl){
             m("div.section", [
               m("h4", ctrl.project().description()),
               // m("span.label", ctrl.project().type()),
-              m("p.info", [
+              m("p.meta", [
                 "Posted by ",
                 m("a",{href: "/user/"+ctrl.project().author().slug, config: m.route}, ctrl.project().author().name),
                 m("br"),

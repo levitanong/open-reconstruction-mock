@@ -5555,6 +5555,7 @@ section.summary {
     border-right: 4px solid white; }
   .event .details {
     margin-left: 90px;
+    padding-bottom: 20px;
     border-bottom: 1px dashed #aaaaaa; }
 
 .timestamp {
@@ -5603,11 +5604,6 @@ h1 small {
     .card .section.type, .project-stub .section.type {
       background-color: #ff851b;
       color: white; }
-    .card .section .info, .project-stub .section .info {
-      font-size: 10px;
-      margin-bottom: 0px;
-      line-height: 18px;
-      color: #aaaaaa; }
   .card h4, .project-stub h4 {
     font-weight: 300; }
 
@@ -5615,3 +5611,9 @@ hr {
   border-top: 0px;
   border-bottom: 1px solid #eeeeee;
   margin: 0; }
+
+.meta {
+  color: #aaaaaa;
+  font-size: 12px;
+  line-height: 18px;
+  margin-bottom: 0px; }
