@@ -134,12 +134,12 @@ project.view = function(ctrl){
           m(".card", [
             m(".section", [
               common.tabs.view(ctrl.projectTabs, [
-                {label: "Attachments"}, {label: "History"}, {label: "Discussion"}
+                {label: "Images"}, {label: "Documents"}, {label: "History"}, {label: "Comments"}
               ])
             ]),
             common.tabs.panes(ctrl.projectTabs, {
-              "Attachments": m(".section", [
-                m("h4", "Images"),
+              "Images": m(".section", [
+                // m("h4", "Images"),
                 m("ul.small-block-grid-3", [
                   m("li", [
                     m("img[src='http://placehold.it/400x300']")
@@ -151,7 +151,9 @@ project.view = function(ctrl){
                     m("img[src='http://placehold.it/400x300']")
                   ])
                 ]),
-                m("h4", "Documents"),
+              ]),
+              "Documents": m(".section", [
+                // m("h4", "Documents"),
                 m("table.doc-list", [
                   m("thead", [
                     m("tr", [
@@ -168,16 +170,18 @@ project.view = function(ctrl){
                 ]),
               ]),
               "History": m(".section", [
-                m("h4", "History"),
+                // m("h4", "History"),
                 historyEvent.calamity(ctrl.project().disaster()),
                 ctrl.project().history().map(function(entry){
                   return historyEvent.project(entry);
                 }),
+              ]),
+              "Comments": m(".section", [
                 m(".action", [
                   userActions(ctrl)
                 ])
               ])
-            })
+            }),
           ])
         ])
       ])
