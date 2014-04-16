@@ -97,6 +97,7 @@ project.view = function(ctrl){
               ]),
                 // renderErrorList(ctrl.project().errors())
             ]),
+            m("hr"),
             m("div.section", [
               m("h5", [m("small", "Amount")]),
               m("h5.value", [
